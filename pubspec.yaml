@@ -1,0 +1,118 @@
+name: news_app
+description: A modern news application built with Flutter, MVVM architecture, and Riverpod state management.
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # State Management
+  flutter_riverpod: ^2.4.9
+  
+  # Responsive Design
+  flutter_screenutil: ^5.9.0
+  
+  # HTTP Requests
+  dio: ^5.4.0
+  
+  # Local Storage
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  shared_preferences: ^2.2.2
+  
+  # UI Components
+  google_fonts: ^6.3.0
+  cached_network_image: ^3.3.0
+  shimmer: ^3.0.0
+  
+  # Video Player
+  video_player: ^2.8.1
+  chewie: ^1.7.4
+  
+  # Navigation
+  persistent_bottom_nav_bar: ^6.2.1
+  
+  # Utils
+  intl: ^0.18.1
+  share_plus: ^7.2.1
+  url_launcher: ^6.2.2
+  
+  # Icons
+  cupertino_icons: ^1.0.2
+  flutter_svg: ^2.0.13
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.7
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/sankalit_logo.svg
+    - assets/sankalitLogo.png
+    # social media logo -->
+    - assets/icons/xLogo.svg
+    - assets/icons/facebookIcon.svg
+    - assets/icons/youtubeLogo.svg
+    - assets/icons/youtubeIcon.png
+    - assets/icons/facebookIcon.png
+    - assets/icons/xIcon.png
+    # other app icons
+    - assets/icons/rightArrow.svg
+    - assets/icons/rightArrow.png
+    - assets/icons/arrowRight.png
+    - assets/icons/arrowRight.svg
+    - assets/icons/arrowTop.png
+    - assets/icons/arrowTop.svg
+    - assets/icons/arrowBottom.png
+    - assets/icons/arrowBottom.svg
+    
+  fonts:
+    - family: JosefinSans
+      fonts:
+        - asset: assets/fonts/JosefinSans-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/JosefinSans-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/JosefinSans-Light.ttf
+          weight: 300
+        - asset: assets/fonts/JosefinSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/JosefinSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/JosefinSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/JosefinSans-Bold.ttf
+          weight: 700
+
+        - asset: assets/fonts/JosefinSans-ThinItalic.ttf
+          weight: 100
+          style: italic
+        - asset: assets/fonts/JosefinSans-ExtraLightItalic.ttf
+          weight: 200
+          style: italic
+        - asset: assets/fonts/JosefinSans-LightItalic.ttf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/JosefinSans-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/JosefinSans-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/JosefinSans-SemiBoldItalic.ttf
+          weight: 600
+          style: italic
+        - asset: assets/fonts/JosefinSans-BoldItalic.ttf
+          weight: 700
+          style: italic
