@@ -4,8 +4,8 @@ import 'package:news_app/core/app_text_style.dart';
 import 'package:news_app/core/theme.dart';
 import 'package:news_app/views/widgets/common_header.dart';
 import 'package:news_app/views/widgets/video_screen_widgets/video_news_card.dart';
+
 import '../../models/video_news_model.dart';
-import '../../core/constants.dart';
 
 class VideoNewsScreen extends StatefulWidget {
   const VideoNewsScreen({super.key});
@@ -41,7 +41,7 @@ class _VideoNewsScreenState extends State<VideoNewsScreen> {
             height: double.infinity,
             color: AppTheme.lightBackgroundColor,
             child: Padding(
-              padding: EdgeInsetsGeometry.symmetric(vertical: 10.h, horizontal: 20.w),
+              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +60,7 @@ class _VideoNewsScreenState extends State<VideoNewsScreen> {
                     itemCount: 10,
                     itemBuilder: (context, index) {
                       return Padding(
-                        padding: EdgeInsetsGeometry.symmetric(vertical: 10.h),
+                        padding: EdgeInsets.symmetric(vertical: 10.h),
                         child: VideoNewsCard(
                           videoUrl: "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
                           videoNewsTitle: "बागेश्वर के हरबाड़ में भारी बारिश और भूस्खलन से तबाही, कई घर क्षतिग्रस्त",

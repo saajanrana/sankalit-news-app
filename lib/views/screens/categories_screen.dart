@@ -93,7 +93,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 padding: EdgeInsets.symmetric(vertical: 0.h),
                 children: data.entries.map((entry) {
                   return Padding(
-                    padding: EdgeInsetsGeometry.symmetric(vertical: 5.h),
+                    padding: EdgeInsets.symmetric(vertical: 5.h),
                     child: ExpandableCategoryCard(title: entry.key, subCategories: entry.value),
                   );
                 }).toList(),

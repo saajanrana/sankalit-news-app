@@ -12,7 +12,7 @@ class CommonHeader extends StatelessWidget {
       children: [
         Image.asset(
           "assets/sankalitLogo.png",
-          width: 80.w,
+          width: 140.w,
         )
       ],
     );

@@ -15,7 +15,7 @@ class ContactUsCard extends StatelessWidget {
         color: AppTheme.darkBackgroundColor.withOpacity(0.05),
       ),
       child: Padding(
-        padding: EdgeInsetsGeometry.symmetric(vertical: 20.h, horizontal: 10.w),
+        padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 10.w),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

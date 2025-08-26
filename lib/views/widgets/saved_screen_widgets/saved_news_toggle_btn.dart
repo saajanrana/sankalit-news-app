@@ -17,7 +17,7 @@ class _SavedNewsToggleBtnState extends State<SavedNewsToggleBtn> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsGeometry.symmetric(horizontal: 5.w),
+      padding: EdgeInsets.symmetric(horizontal: 5.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,

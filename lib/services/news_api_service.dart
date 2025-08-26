@@ -79,54 +79,54 @@ class NewsApiService {
     
     return [
       NewsModel(
-        title: 'Breaking News: Flutter 4.0 Released with Amazing Features',
-        description: 'Google releases Flutter 4.0 with improved performance, new widgets, and enhanced development tools.',
+        title:
+            'मुख्यमंत्री श्री पुष्कर सिंह धामी ने प्रधानमंत्री श्री नरेंद्र मोदी एवं केंद्रीय ऊर्जा मंत्री प्रधानमंत्री श्री नरेंद्र मोदी एवं केंद्रीय ऊर्जा मंत्री प्रधानमंत्री श्री नरेंद्र मोदी एवं केंद्रीय ऊर्जा मंत्री प्रधानमंत्री श्री नरेंद्र मोदी एवं केंद्रीय ऊर्जा मंत्री,',
+        description:
+            'केंद्र सरकार द्वारा यूपीसीएल, उत्तराखण्ड द्वारा ऋषिकेश के गंगा  कॉरिडोर में एच.टी./एल.टी. लाइनों के भूमिगतकरण एवं एससीएडीए ऑटोमेशन हेतु  कुल परियोजना लागत ₹547.73 करोड़ (समानांतर जीबीएस ₹493.05 करोड़ सहित) तथा पी.एम.ए. शुल्क @ 1.5% परियोजना लागत (₹8.22 करोड़, जिसमें जीबीएस ₹7.39  करोड़) के साथ योजना को स्वीकृति प्रदान की गई है | इस परियोजना के अंतर्गत ऋषिकेश के महत्वपूर्ण क्षेत्रों में एचटी/एलटी विद्युत लाइनों को भूमिगत  किया जाएगा, साथ ही SCADA ऑटोमेशन प्रणाली भी लागू की जाएगी, जिससे बिजली  आपूर्ति में पारदर्शिता, निगरानी और त्वरित सुधार की क्षमता विकसित होगी।उत्तराखण्ड के मुख्यमंत्री श्री पुष्कर सिंह धामी ने ऋषिकेश के गंगा  कॉरिडोर क्षेत्र में विद्युत लाइनों के भूमिगतकरण एवं ऑटोमेशन के लिए पावर  फाइनेंस कॉरपोरेशन लिमिटेड (पीएफसी) द्वारा ₹547.73 करोड़ की परियोजना को  अनुमोदित किए जाने पर प्रधानमंत्री श्री नरेंद्र मोदी एवं केंद्रीय ऊर्जा  मंत्री श्री मनोहर लाल खट्टर का हार्दिक आभार व्यक्त किया है। मुख्यमंत्री  श्री पुष्कर सिंह धामी ने इस संबंध में केंद्र सरकार से अनुरोध किया था   ऋषिकेश जैसे आध्यात्मिक, पर्यटन और कुम्भ क्षेत्र के लिए यह परियोजना न  केवल विद्युत व्यवस्था को सुदृढ़ बनाएगी, बल्कि नगर की सौंदर्यकरण ,  सुरक्षा और पर्यावरणीय संतुलन में भी महत्वपूर्ण भूमिका निभाएगी।  उत्तराखण्ड सरकार इस परियोजना को समयबद्ध रूप से लागू करने के लिए पूर्ण  प्रतिबद्धता के साथ कार्य करेगी, जिससे प्रदेशवासियों को गुणवत्तापूर्ण,  सतत और सुरक्षित विद्युत आपूर्ति सुनिश्चित हो सके।',
         url: 'https://example.com/flutter-4-released',
-        urlToImage: 'https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg',
+        urlToImage:
+            'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS73YSTZ2QCqhzVufhV1vfFkT-h3ErTAROexkMsh8xgje5MH5x0',
         publishedAt: DateTime.now().subtract(const Duration(hours: 1)),
-        author: 'Tech Reporter',
-        content: 'Flutter 4.0 brings revolutionary changes to mobile development...',
+        author: 'उत्तराखण्ड',
+        // state: 'उत्तराखण्ड',
         source: SourceModel(id: 'tech-news', name: 'Tech News'),
       ),
       NewsModel(
-        title: 'Global Climate Summit Reaches Historic Agreement',
-        description: 'World leaders unite on comprehensive climate action plan for the next decade.',
-        url: 'https://example.com/climate-summit-agreement',
-        urlToImage: 'https://images.pexels.com/photos/1108572/pexels-photo-1108572.jpeg',
-        publishedAt: DateTime.now().subtract(const Duration(hours: 3)),
-        author: 'Environmental Correspondent',
-        content: 'The historic agreement includes ambitious targets...',
-        source: SourceModel(id: 'global-news', name: 'Global News'),
+        title:
+            'मुख्यमंत्री श्री पुष्कर सिंह धामी ने प्रधानमंत्री श्री नरेंद्र मोदी एवं केंद्रीय ऊर्जा मंत्री...... ',
+        description:
+            'केंद्र सरकार द्वारा यूपीसीएल, उत्तराखण्ड द्वारा ऋषिकेश के गंगा कॉरिडोर ..',
+        url: 'https://example.com/flutter-4-released',
+        urlToImage:
+            'https://images.bhaskarassets.com/web2images/1884/2025/07/04/1001022176_1751605741.jpg',
+        publishedAt: DateTime.now().subtract(const Duration(hours: 1)),
+        author: 'उत्तराखण्ड',
+        // state: 'उत्तराखण्ड',
+        source: SourceModel(id: 'tech-news', name: 'Tech News'),
       ),
       NewsModel(
-        title: 'Stock Market Reaches New All-Time High',
-        description: 'Major indices surge as investors show confidence in economic recovery.',
-        url: 'https://example.com/stock-market-high',
-        urlToImage: 'https://images.pexels.com/photos/590020/pexels-photo-590020.jpg',
-        publishedAt: DateTime.now().subtract(const Duration(hours: 5)),
-        author: 'Financial Analyst',
-        content: 'The market rally continues with strong performance...',
-        source: SourceModel(id: 'finance-times', name: 'Finance Times'),
+        title:
+            'मुख्यमंत्री श्री पुष्कर सिंह धामी ने प्रधानमंत्री श्री नरेंद्र मोदी एवं केंद्रीय ऊर्जा मंत्री... ',
+        description:
+            'केंद्र सरकार द्वारा यूपीसीएल, उत्तराखण्ड द्वारा ऋषिकेश के गंगा कॉरिडोर ..',
+        url: 'https://example.com/flutter-4-released',
+        urlToImage: 'https://sankalit.com/post_images/ALZE59.jpg',
+        publishedAt: DateTime.now().subtract(const Duration(hours: 1)),
+        author: 'उत्तराखण्ड',
+        // state: 'उत्तराखण्ड',
+        source: SourceModel(id: 'tech-news', name: 'Tech News'),
       ),
       NewsModel(
-        title: 'AI Revolution: New Breakthrough in Machine Learning',
-        description: 'Scientists develop advanced AI model that can understand context better than ever before.',
-        url: 'https://example.com/ai-breakthrough',
-        urlToImage: 'https://images.pexels.com/photos/5380664/pexels-photo-5380664.jpeg',
-        publishedAt: DateTime.now().subtract(const Duration(hours: 7)),
-        author: 'AI Researcher',
-        content: 'The new model demonstrates unprecedented capabilities...',
-        source: SourceModel(id: 'ai-today', name: 'AI Today'),
-      ),
-      NewsModel(
-        title: 'Sports Update: Championship Finals Set for This Weekend',
-        description: 'Two powerhouse teams prepare for the ultimate showdown in championship finals.',
-        url: 'https://example.com/championship-finals',
-        urlToImage: 'https://images.pexels.com/photos/114296/pexels-photo-114296.jpeg',
-        publishedAt: DateTime.now().subtract(const Duration(hours: 9)),
-        author: 'Sports Reporter',
-        content: 'Fans eagerly await the championship match...',
-        source: SourceModel(id: 'sports-central', name: 'Sports Central'),
+        title:
+            'मुख्यमंत्री श्री पुष्कर सिंह धामी ने प्रधानमंत्री श्री नरेंद्र मोदी एवं केंद्रीय ऊर्जा मंत्री...... ',
+        description:
+            'केंद्र सरकार द्वारा यूपीसीएल, उत्तराखण्ड द्वारा ऋषिकेश के गंगा कॉरिडोर ..',
+        url: 'https://example.com/flutter-4-released',
+        urlToImage: 'https://sankalit.com/post_images/I37596.jpg',
+        publishedAt: DateTime.now().subtract(const Duration(hours: 1)),
+        author: 'उत्तराखण्ड',
+        // state: 'उत्तराखण्ड',
+        source: SourceModel(id: 'tech-news', name: 'Tech News'),
       ),
     ];
   }
