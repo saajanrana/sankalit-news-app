@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   static const Color primaryColor = Color(0xFFFF0000);
-  static const Color secondaryColor = Color(0xFF03DAC6);
+  static const Color secondaryColor = Color(0xFF232020);
   static const Color accentColor = Color(0xFFFF6B35);
   static const Color errorColor = Color(0xFFB00020);
 
   // Light Theme Colors
   static const Color lightBackgroundColor = Color(0xFFFAFAFA);
-  static const Color lightSurfaceColor = Colors.white;
+  static const Color lightSurfaceColor = Color(0xFFFFFFFF);
   static const Color lightTextPrimary = Color(0xFF1A1A1A);
   static const Color lightTextSecondary = Color(0xFF757575);
 
@@ -19,6 +17,9 @@ class AppTheme {
   static const Color darkSurfaceColor = Color(0xFF1E1E1E);
   static const Color darkTextPrimary = Color(0xFFFFFFFF);
   static const Color darkTextSecondary = Color(0xFFB3B3B3);
+
+  // -- bottom bar colors
+  static const Color bottomBarDarkColor = Color(0xFF232020);
 
 //   static ThemeData get lightTheme {
 //     return ThemeData(
