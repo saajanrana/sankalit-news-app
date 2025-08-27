@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:news_app/core/theme.dart';
 import 'package:news_app/views/screens/contact_us_screen.dart';
@@ -55,6 +56,12 @@ class _MainScreenState extends State<MainScreen> {
       body: _screens[_currentIndex],
       bottomNavigationBar: _buildCustomNavBar(),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    FlutterNativeSplash.remove();
   }
 
   Widget _buildCustomNavBar() {

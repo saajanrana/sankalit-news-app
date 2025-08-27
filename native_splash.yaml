@@ -1,0 +1,15 @@
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/sankalitSplash.png
+  color_dark: "#FFFFFF"
+  image_dark: assets/sankalitSplash.png
+
+
+
+  android_12:
+    image: assets/sankalitSplash.png
+    icon_background_color: "#FFFFFF"
+    image_dark: assets/sankalitSplash.png
+    icon_background_color_dark:  "#FFFFFF"
+  
+  web: false

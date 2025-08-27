@@ -22,7 +22,7 @@ class VideoNewsCard extends StatelessWidget {
       children: [
         VideoPlayerWidget(videoUrl: videoUrl),
         SizedBox(height: 10.h),
-        Text(videoNewsTitle, style: AppTextStyles.bodyBold),
+        Text(videoNewsTitle, style: AppTextStyles.bodyBoldHindi),
         SizedBox(height: 5.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
