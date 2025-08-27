@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:news_app/core/app_text_style.dart';
 import 'package:news_app/core/theme.dart';
 import 'package:news_app/views/widgets/category_screen_widgets/expandable_category_card.dart';
 import 'package:news_app/views/widgets/common_header.dart';
-import '../widgets/category_screen_widgets/category_card.dart';
-import 'category_news_screen.dart';
-import '../../viewmodels/category_viewmodel.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});

@@ -4,7 +4,6 @@ import 'package:news_app/core/theme.dart';
 
 class HorizontalLineWidget extends StatelessWidget {
   const HorizontalLineWidget({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Container(

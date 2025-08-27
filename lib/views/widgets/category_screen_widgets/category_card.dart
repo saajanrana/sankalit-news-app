@@ -35,7 +35,7 @@ class CategoryCard extends StatelessWidget {
               children: [
                 Text(
                   tileTitle,
-                  style: AppTextStyles.body.copyWith(
+                  style: AppTextStyles.bodyHindi.copyWith(
                     color: isSelected ? AppTheme.lightBackgroundColor : AppTheme.darkBackgroundColor,
                   ),
                 ),
