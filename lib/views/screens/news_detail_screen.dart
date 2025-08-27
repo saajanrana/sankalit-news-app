@@ -1,13 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:news_app/core/app_text_style.dart';
+import 'package:news_app/core/constants.dart';
+import 'package:news_app/core/theme.dart';
+import 'package:news_app/viewmodels/news_viewmodel.dart';
+import 'package:news_app/views/widgets/common_header.dart';
+import 'package:news_app/views/widgets/news_card.dart';
+import 'package:news_app/views/widgets/shimmer_loading.dart';
+
 import '../../models/news_model.dart';
 import '../../viewmodels/bookmark_viewmodel.dart';
-
 
 class NewsDetailScreen extends ConsumerWidget {
   final NewsModel news;
@@ -18,181 +23,258 @@ class NewsDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bookmarkNotifier = ref.read(bookmarkProvider.notifier);
     final isBookmarked = bookmarkNotifier.isBookmarked(news.url);
+    final newsState = ref.watch(newsProvider);
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 250.h,
-            floating: false,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: news.urlToImage != null
-                  ? CachedNetworkImage(
-                      imageUrl: news.urlToImage!,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        color: Theme.of(context).colorScheme.surfaceVariant,
-                        child: const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: Theme.of(context).colorScheme.surfaceVariant,
-                        child: Icon(
-                          Icons.image_not_supported,
-                          size: 50.sp,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    )
-                  : Container(
-                      color: Theme.of(context).colorScheme.surfaceVariant,
-                      child: Icon(
-                        Icons.article,
-                        size: 50.sp,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-            ),
-            actions: [
-              IconButton(
-                icon: Icon(
-                  isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
-                  color: isBookmarked ? Theme.of(context).colorScheme.primary : null,
-                ),
-                onPressed: () {
-                  bookmarkNotifier.toggleBookmark(news);
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.share),
-                onPressed: () {
-                  Share.share(
-                    '${news.title}\n\n${news.url}',
-                    subject: news.title,
-                  );
-                },
-              ),
-            ],
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+                left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
+            child: const CommonHeader(),
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(16.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Title
-                  Text(
-                    news.title,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      height: 1.3,
-                    ),
-                  ),
-                  SizedBox(height: 12.h),
-                  
-                  // Meta information
-                  Row(
-                    children: [
-                      if (news.source?.name != null) ...[
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8.w,
-                            vertical: 4.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primaryContainer,
-                            borderRadius: BorderRadius.circular(12.r),
-                          ),
-                          child: Text(
-                            news.source!.name,
-                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onPrimaryContainer,
-                              fontWeight: FontWeight.w500,
+          Expanded(
+            child: CustomScrollView(
+              slivers: [
+                // ✅ SliverAppBar
+                SliverAppBar(
+                  expandedHeight: 250.h,
+                  floating: false,
+                  pinned: false,
+                  automaticallyImplyLeading: false,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: news.urlToImage != null
+                        ? CachedNetworkImage(
+                            imageUrl: news.urlToImage!,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Container(
+                              color:
+                                  Theme.of(context).colorScheme.surfaceVariant,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              color:
+                                  Theme.of(context).colorScheme.surfaceVariant,
+                              child: Icon(
+                                Icons.image_not_supported,
+                                size: 50.sp,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            color: Theme.of(context).colorScheme.surfaceVariant,
+                            child: Icon(
+                              Icons.article,
+                              size: 50.sp,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
-                        ),
-                        SizedBox(width: 8.w),
-                      ],
-                      Text(
-                        DateFormat('MMM dd, yyyy • HH:mm').format(news.publishedAt),
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                        ),
-                      ),
-                    ],
                   ),
-                  SizedBox(height: 16.h),
-                  
-                  // Author
-                  if (news.author != null) ...[
-                    Row(
+                ),
+
+                // ✅ Article Details
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          Icons.person,
-                          size: 16.sp,
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                        ),
-                        SizedBox(width: 4.w),
                         Text(
-                          'By ${news.author}',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                            fontWeight: FontWeight.w500,
-                          ),
+                          news.title,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium
+                              ?.copyWith(
+                                  fontWeight: FontWeight.bold, height: 1.3),
                         ),
+                        SizedBox(height: 12.h),
+
+                        // ✅ Row with Source, Date, Buttons
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            if (news.source?.name != null)
+                              Text(
+                                "उत्तराखण्ड",
+                                style: AppTextStyles.heading3.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.lightTextPrimary,
+                                ),
+                              ),
+                            SizedBox(width: 8.w),
+                            Text(
+                              DateFormat('dd-MMM-yyyy')
+                                  .format(news.publishedAt),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: Colors.grey),
+                            ),
+                            InkWell(
+                              onTap: () {},
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppTheme.darkBackgroundColor,
+                                  borderRadius: BorderRadius.circular(5.r),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 5.h, horizontal: 10.w),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "SHARE",
+                                  style: AppTextStyles.small.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.lightBackgroundColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: Image.asset(
+                                isBookmarked
+                                    ? 'assets/icons/bookmarkActive.png'
+                                    : 'assets/icons/bookmark.png',
+                                width: 24.w,
+                                height: 24.h,
+                              ),
+                              onPressed: () {
+                                bookmarkNotifier.toggleBookmark(news);
+                              },
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16.h),
+
+                        // ✅ Author
+                        if (news.author != null) ...[
+                          Row(
+                            children: [
+                              Icon(Icons.person,
+                                  size: 16.sp, color: Colors.grey),
+                              SizedBox(width: 4.w),
+                              Text(
+                                'By ${news.author}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 16.h),
+                        ],
+
+                        if (news.description != null) ...[
+                          Text(
+                            news.description!,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(height: 1.5, color: Colors.black87),
+                          ),
+                          SizedBox(height: 20.h),
+                        ],
+
+                        if (news.content != null) ...[
+                          Text(
+                            news.content!,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(height: 1.6),
+                          ),
+                          SizedBox(height: 20.h),
+                        ],
                       ],
                     ),
-                    SizedBox(height: 16.h),
-                  ],
-                  
-                  // Description
-                  if (news.description != null) ...[
-                    Text(
-                      news.description!,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        height: 1.5,
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-                      ),
-                    ),
-                    SizedBox(height: 20.h),
-                  ],
-                  
-                  // Content
-                  if (news.content != null) ...[
-                    Text(
-                      news.content!,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        height: 1.6,
-                      ),
-                    ),
-                    SizedBox(height: 24.h),
-                  ],
-                  
-                  // Read full article button
-                  SizedBox(
+                  ),
+                ),
+
+                // ✅ Black Container Section
+                SliverToBoxAdapter(
+                  child: Container(
+                    height: 40.h,
                     width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        final uri = Uri.parse(news.url);
-                        if (await canLaunchUrl(uri)) {
-                          await launchUrl(uri, mode: LaunchMode.externalApplication);
-                        }
-                      },
-                      icon: const Icon(Icons.open_in_new),
-                      label: const Text('Read Full Article'),
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
+                    color: Colors.black,
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Text(
+                      'READ MORE',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  SizedBox(height: 32.h),
-                ],
-              ),
+                ),
+
+                // ✅ Spacer
+                SliverToBoxAdapter(child: SizedBox(height: 10.h)),
+
+                // ✅ Loading/Error or Grid
+                if (newsState.isLoading && newsState.news.isEmpty)
+                  const SliverToBoxAdapter(child: ShimmerLoading())
+                else if (newsState.error != null && newsState.news.isEmpty)
+                  SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            Text(AppStrings.error,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall),
+                            SizedBox(height: 8),
+                            Text(newsState.error!,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                textAlign: TextAlign.center),
+                            SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: () =>
+                                  ref.read(newsProvider.notifier).refresh(),
+                              child: const Text(AppStrings.retry),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                else
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.70,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          if (index < newsState.news.length) {
+                            return VerticalNewsCard(
+                                news: newsState.news[index]);
+                          } else if (newsState.isLoading) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          return null;
+                        },
+                        childCount: newsState.news.length +
+                            (newsState.isLoading ? 1 : 0),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         ],

@@ -23,7 +23,7 @@ class AddsDynamicImageList extends StatelessWidget {
                 child: Image.network(
                   imageUrls[i],
                   width: double.infinity,
-                  height: 70.h,
+                  height: 50.h,
                   fit: BoxFit.fill,
                   errorBuilder: (context, error, stackTrace) =>
                       const SizedBox.shrink(),

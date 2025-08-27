@@ -12,7 +12,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(NewsModelAdapter());
 
-  await LocalStorageService.init(); // ✅ Initialize storage service here
+  await LocalStorageService.init(); 
 
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

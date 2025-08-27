@@ -80,7 +80,9 @@ flutter:
     - assets/icons/arrowTop.svg
     - assets/icons/arrowBottom.png
     - assets/icons/arrowBottom.svg
-    
+    - assets/icons/bookmark.png
+    - assets/icons/bookmarkActive.png
+
   fonts:
     - family: JosefinSans
       fonts:

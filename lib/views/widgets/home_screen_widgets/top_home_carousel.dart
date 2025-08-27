@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:marquee/marquee.dart';
+import 'package:news_app/core/app_text_style.dart';
+import 'package:news_app/core/theme.dart';
 
 class BreakingNewsTicker extends StatelessWidget {
-  final String breakingText; 
-  final String newsText; 
+  final String breakingText;
+  final String newsText;
 
   const BreakingNewsTicker({
     Key? key,
@@ -21,14 +23,13 @@ class BreakingNewsTicker extends StatelessWidget {
           // Left Black Box for "Breaking"
           Container(
             color: Colors.black,
-            padding: EdgeInsets.symmetric(horizontal: 12.w),
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
             alignment: Alignment.center,
             child: Text(
               breakingText,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16.sp,
+              style: AppTextStyles.heading3.copyWith(
                 fontWeight: FontWeight.bold,
+                color: AppTheme.lightBackgroundColor,
               ),
             ),
           ),
@@ -40,19 +41,18 @@ class BreakingNewsTicker extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Marquee(
                 text: newsText,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                ),
+                 style: AppTextStyles.body.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.lightBackgroundColor,
+                                  ),
                 scrollAxis: Axis.horizontal,
                 blankSpace: 50.w,
                 velocity: 40.0, // speed
-                pauseAfterRound: Duration(seconds: 1),
+                pauseAfterRound: Duration(seconds: 0),
                 startPadding: 10.w,
-                accelerationDuration: Duration(seconds: 1),
+                accelerationDuration: Duration(seconds: 2),
                 accelerationCurve: Curves.linear,
-                decelerationDuration: Duration(milliseconds: 500),
+                decelerationDuration: Duration(milliseconds: 900),
                 decelerationCurve: Curves.easeOut,
               ),
             ),

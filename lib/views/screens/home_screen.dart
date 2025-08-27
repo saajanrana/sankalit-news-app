@@ -2,6 +2,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:news_app/core/app_text_style.dart';
+import 'package:news_app/core/theme.dart';
 import 'package:news_app/views/widgets/common_header.dart';
 import 'package:news_app/views/widgets/home_screen_widgets/home_add_section.dart';
 import 'package:news_app/views/widgets/home_screen_widgets/home_category_scroller.dart';
@@ -63,15 +65,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final newsState = ref.watch(newsProvider);
-  
 
     return Scaffold(
-    
       endDrawer: const CustomDrawer(),
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
+            padding: EdgeInsets.only(
+                left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
             child: const CommonHeader(),
           ),
           Expanded(
@@ -80,7 +81,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: CustomScrollView(
                 controller: _scrollController,
                 slivers: [
-              
                   const SliverToBoxAdapter(
                     child: BreakingNewsTicker(
                       breakingText: 'Breaking',
@@ -88,16 +88,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           'मुख्यमंत्री श्री पुष्कर सिंह धामी ने प्रधानमंत्री श्री नरेंद्र मोदी एवं | मुख्यमंत्री और अधिकारियों ने गैरसैंण में ‘एक पेड़ माँ के नाम’ अभियान के तहत किया पौधा रोपण.',
                     ),
                   ),
-            
+
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
-            
+
                   // ✅ add Image section
                   AddsDynamicImageList(
                     imageUrls: imageUrls,
                   ),
-            
+
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
-            
+
                   // ✅ Trending News header + Carousel
                   SliverToBoxAdapter(
                     child: Column(
@@ -107,7 +107,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
                           child: Text(
                             'TRENDING NEWS',
-                            style: Theme.of(context).textTheme.headlineSmall,
+                            style: AppTextStyles.heading1.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.lightTextPrimary,
+                                  ),
                           ),
                         ),
                         SizedBox(height: 10.h),
@@ -116,7 +119,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             _buildCarouselItem(
                               imageUrl:
                                   'https://sankalit.com/post_images/featured_1756050433.jpg',
-                              title: 'भूस्खलन से बद्रीनाथ राजमार्ग बंद, यात्री ...',
+                              title:
+                                  'भूस्खलन से बद्रीनाथ राजमार्ग बंद, यात्री ...',
                             ),
                             _buildCarouselItem(
                               imageUrl:
@@ -157,9 +161,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ],
                     ),
                   ),
-                  SliverToBoxAdapter(child: SizedBox(height: 20.h),
+                  SliverToBoxAdapter(
+                    child: SizedBox(height: 20.h),
                   ),
-                  
+
                   SliverToBoxAdapter(
                     child: HorizontalCategoryTabs(
                       categories: homeCategories,
@@ -169,7 +174,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SliverToBoxAdapter(
                     child: SizedBox(height: 20.h),
                   ),
-            
+
                   SliverToBoxAdapter(
                     child: Container(
                       height: 40.h,
@@ -188,7 +193,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                     ),
                   ),
-            
+
                   // ✅ News list section
                   if (newsState.isLoading && newsState.news.isEmpty)
                     const SliverToBoxAdapter(child: ShimmerLoading())
@@ -196,13 +201,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     SliverToBoxAdapter(
                       child: Center(
                         child: Padding(
-                         padding: EdgeInsets.symmetric(
-                                      horizontal: 16.w, vertical: 8.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.w, vertical: 8.h),
                           child: Column(
                             children: [
                               Text(
                                 AppStrings.error,
-                                style: Theme.of(context).textTheme.headlineSmall,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                               ),
                               SizedBox(height: 8),
                               Text(
@@ -251,8 +257,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           }
                           return null;
                         },
-                        childCount:
-                            newsState.news.length + (newsState.isLoading ? 1 : 0),
+                        childCount: newsState.news.length +
+                            (newsState.isLoading ? 1 : 0),
                       ),
                     ),
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
@@ -260,7 +266,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   AddsDynamicImageList(
                     imageUrls: imageUrls,
                   ),
-            
+
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
                   SliverToBoxAdapter(
                     child: Container(
@@ -281,7 +287,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   ),
                   SliverToBoxAdapter(child: SizedBox(height: 10.h)),
-                  // ✅ News list section
+                  // ✅ grid News list section
                   if (newsState.isLoading && newsState.news.isEmpty)
                     const SliverToBoxAdapter(child: ShimmerLoading())
                   else if (newsState.error != null && newsState.news.isEmpty)
@@ -293,7 +299,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             children: [
                               Text(
                                 AppStrings.error,
-                                style: Theme.of(context).textTheme.headlineSmall,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                               ),
                               SizedBox(height: 8),
                               Text(
@@ -314,34 +321,49 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     )
                   else
                     SliverGrid(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        childAspectRatio: 0.75,
-            
+                        childAspectRatio: 0.70,
                       ),
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           if (index < newsState.news.length) {
-                            return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16.w),
-                              child: VerticalNewsCard(news: newsState.news[index]),
+                            return Column(
+                              children: [
+                                Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 16.w),
+                                  child: VerticalNewsCard(
+                                      news: newsState.news[index]),
+                                ),
+                                // Add divider if this is the last item in the row
+                                if ((index + 1) % 1 == 0)
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+                                    child: Divider(
+                                      thickness: 1,
+                                      color: Colors.grey.withOpacity(0.3),
+                                    ),
+                                  ),
+                              ],
                             );
                           } else if (newsState.isLoading) {
-                            return const Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           }
                           return null;
                         },
-                        childCount:
-                            newsState.news.length + (newsState.isLoading ? 1 : 0),
+                        childCount: newsState.news.length +
+                            (newsState.isLoading ? 1 : 0),
                       ),
-                      
                     ),
-            
                   // ✅ add Image section
                   AddsDynamicImageList(
                     imageUrls: imageUrls,
                   ),
-            
+
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
                   SliverToBoxAdapter(
                     child: Container(
@@ -373,7 +395,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             children: [
                               Text(
                                 AppStrings.error,
-                                style: Theme.of(context).textTheme.headlineSmall,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                               ),
                               SizedBox(height: 8),
                               Text(
@@ -422,8 +445,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           }
                           return null;
                         },
-                        childCount:
-                            newsState.news.length + (newsState.isLoading ? 1 : 0),
+                        childCount: newsState.news.length +
+                            (newsState.isLoading ? 1 : 0),
                       ),
                     ),
                 ],

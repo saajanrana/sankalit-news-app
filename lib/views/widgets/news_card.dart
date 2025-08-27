@@ -27,6 +27,7 @@ class NewsCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bookmarkNotifier = ref.read(bookmarkProvider.notifier);
     final isBookmarked = bookmarkNotifier.isBookmarked(news.url);
+  
 
     return InkWell(
       onTap: () {
@@ -181,17 +182,13 @@ class NewsCard extends ConsumerWidget {
                             height: 32.h,
                             child: IconButton(
                               padding: EdgeInsets.zero,
-                              icon: Icon(
+                              icon: Image.asset(
                                 isBookmarked
-                                    ? Icons.bookmark
-                                    : Icons.bookmark_outline,
-                                color: isBookmarked
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .onSurface
-                                        .withOpacity(0.6),
-                                size: 22.sp,
+                                    ? 'assets/icons/bookmarkActive.png'
+                                    : 'assets/icons/bookmark.png',
+                                width: 22.w,
+                                height: 22.h,
+                                fit: BoxFit.contain,
                               ),
                               onPressed: () {
                                 bookmarkNotifier.toggleBookmark(news);
@@ -240,7 +237,7 @@ class VerticalNewsCard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image section
-            Container(
+            SizedBox(
               height: 100.h,
               width: double.infinity,
               child: Stack(
@@ -317,28 +314,25 @@ class VerticalNewsCard extends ConsumerWidget {
                     ),
                     // Bookmark button positioned on image
                     if (showBookmarkButton)
-                      SizedBox(
-                        width: 32.w,
-                        height: 32.h,
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          icon: Icon(
-                            isBookmarked
-                                ? Icons.bookmark
-                                : Icons.bookmark_outline,
-                            color: isBookmarked
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context)
-                                    .colorScheme
-                                    .onSurface
-                                    .withOpacity(0.6),
-                            size: 22.sp,
+                     Container(
+                            width: 32.w,
+                            height: 32.h,
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              icon: Image.asset(
+                                isBookmarked
+                                    ? 'assets/icons/bookmarkActive.png'
+                                    : 'assets/icons/bookmark.png',
+                                width: 22.w,
+                                height: 22.h,
+                                fit: BoxFit.contain,
+                              ),
+                              onPressed: () {
+
+                                bookmarkNotifier.toggleBookmark(news);
+                              },
+                            ),
                           ),
-                          onPressed: () {
-                            bookmarkNotifier.toggleBookmark(news);
-                          },
-                        ),
-                      ),
                   ],
                 ),
                 SizedBox(height: 8.h),

@@ -12,7 +12,13 @@ class VideoNewsCard extends StatelessWidget {
   final VoidCallback onPressShareBtn;
   final VoidCallback onPressSaveBtn;
 
-  const VideoNewsCard({super.key, required this.videoUrl, required this.dateString, required this.videoNewsTitle, required this.onPressSaveBtn, required this.onPressShareBtn});
+  const VideoNewsCard(
+      {super.key,
+      required this.videoUrl,
+      required this.dateString,
+      required this.videoNewsTitle,
+      required this.onPressSaveBtn,
+      required this.onPressShareBtn});
 
   @override
   Widget build(BuildContext context) {
@@ -36,23 +42,35 @@ class VideoNewsCard extends StatelessWidget {
                 InkWell(
                   onTap: onPressShareBtn,
                   child: Container(
-                    decoration: BoxDecoration(color: AppTheme.darkBackgroundColor, borderRadius: BorderRadius.circular(5.r)),
-                    padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w),
+                    decoration: BoxDecoration(
+                        color: AppTheme.darkBackgroundColor,
+                        borderRadius: BorderRadius.circular(5.r)),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w),
                     alignment: Alignment.center,
                     child: Text(
                       "SHARE",
-                      style: AppTextStyles.small.copyWith(fontWeight: FontWeight.bold, color: AppTheme.lightBackgroundColor),
+                      style: AppTextStyles.small.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.lightBackgroundColor),
                     ),
                   ),
                 ),
                 SizedBox(width: 5.w),
-                InkWell(
-                  onTap: onPressSaveBtn,
-                  child: Icon(
-                    Icons.bookmark,
-                    size: 20.sp,
+                Container(
+                  width: 32.w,
+                  height: 32.h,
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: Image.asset(
+                      'assets/icons/bookmark.png',
+                      width: 24.w,
+                      height: 24.h,
+                      fit: BoxFit.contain,
+                    ),
+                    onPressed: () {},
                   ),
-                )
+                ),
               ],
             )
           ],
