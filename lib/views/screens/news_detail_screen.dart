@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:news_app/core/app_text_style.dart';
-import 'package:news_app/core/constants.dart';
-import 'package:news_app/core/theme.dart';
-import 'package:news_app/viewmodels/news_viewmodel.dart';
-import 'package:news_app/views/widgets/common_header.dart';
-import 'package:news_app/views/widgets/news_card.dart';
-import 'package:news_app/views/widgets/shimmer_loading.dart';
+import 'package:Sankalit/core/app_text_style.dart';
+import 'package:Sankalit/core/constants.dart';
+import 'package:Sankalit/core/theme.dart';
+import 'package:Sankalit/viewmodels/news_viewmodel.dart';
+import 'package:Sankalit/views/widgets/common_header.dart';
+import 'package:Sankalit/views/widgets/news_card.dart';
+import 'package:Sankalit/views/widgets/shimmer_loading.dart';
 
 import '../../models/news_model.dart';
 import '../../viewmodels/bookmark_viewmodel.dart';
@@ -34,8 +34,7 @@ class NewsDetailScreen extends ConsumerWidget {
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(
-                left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
+            padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
             child: const CommonHeader(),
           ),
           Expanded(
@@ -53,21 +52,17 @@ class NewsDetailScreen extends ConsumerWidget {
                             imageUrl: news.urlToImage!,
                             fit: BoxFit.cover,
                             placeholder: (context, url) => Container(
-                              color:
-                                  Theme.of(context).colorScheme.surfaceVariant,
+                              color: Theme.of(context).colorScheme.surfaceVariant,
                               child: const Center(
                                 child: CircularProgressIndicator(),
                               ),
                             ),
                             errorWidget: (context, url, error) => Container(
-                              color:
-                                  Theme.of(context).colorScheme.surfaceVariant,
+                              color: Theme.of(context).colorScheme.surfaceVariant,
                               child: Icon(
                                 Icons.image_not_supported,
                                 size: 50.sp,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                           )
@@ -76,9 +71,7 @@ class NewsDetailScreen extends ConsumerWidget {
                             child: Icon(
                               Icons.article,
                               size: 50.sp,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           ),
                   ),
@@ -126,8 +119,7 @@ class NewsDetailScreen extends ConsumerWidget {
                                   color: AppTheme.darkBackgroundColor,
                                   borderRadius: BorderRadius.circular(5.r),
                                 ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 5.h, horizontal: 10.w),
+                                padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w),
                                 alignment: Alignment.center,
                                 child: Text(
                                   "SHARE",
@@ -140,9 +132,7 @@ class NewsDetailScreen extends ConsumerWidget {
                             ),
                             IconButton(
                               icon: Image.asset(
-                                isBookmarked
-                                    ? 'assets/icons/bookmarkActive.png'
-                                    : 'assets/icons/bookmark.png',
+                                isBookmarked ? 'assets/icons/bookmarkActive.png' : 'assets/icons/bookmark.png',
                                 width: 24.w,
                                 height: 24.h,
                               ),
@@ -241,8 +231,7 @@ class NewsDetailScreen extends ConsumerWidget {
                             ),
                             SizedBox(height: 10.h),
                             ElevatedButton(
-                              onPressed: () =>
-                                  ref.read(newsProvider.notifier).refresh(),
+                              onPressed: () => ref.read(newsProvider.notifier).refresh(),
                               child: const Text(AppStrings.retry),
                             ),
                           ],

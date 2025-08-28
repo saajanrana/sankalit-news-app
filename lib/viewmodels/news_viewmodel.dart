@@ -56,7 +56,7 @@ class NewsNotifier extends StateNotifier<NewsState> {
 
     try {
       final newsList = await _apiService.getMockNews(category: category);
-      
+
       if (refresh) {
         state = state.copyWith(
           news: newsList,
@@ -70,7 +70,6 @@ class NewsNotifier extends StateNotifier<NewsState> {
           hasMore: newsList.length >= 20,
         );
       }
-      
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -82,7 +81,7 @@ class NewsNotifier extends StateNotifier<NewsState> {
   // Load more news (pagination)
   Future<void> loadMore() async {
     if (!state.hasMore || state.isLoading) return;
-    
+
     await loadNews(category: _currentCategory, refresh: false);
   }
 

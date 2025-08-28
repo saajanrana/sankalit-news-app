@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:news_app/core/app_text_style.dart';
-import 'package:news_app/core/theme.dart';
-import 'package:news_app/views/widgets/common_widgets/horizontal_line_widget.dart';
-import 'package:news_app/views/widgets/video_player_widget.dart';
+import 'package:Sankalit/core/app_text_style.dart';
+import 'package:Sankalit/core/theme.dart';
+import 'package:Sankalit/views/widgets/common_widgets/horizontal_line_widget.dart';
+import 'package:Sankalit/views/widgets/video_player_widget.dart';
 
 class VideoNewsCard extends StatelessWidget {
   final String videoUrl;
@@ -12,13 +12,7 @@ class VideoNewsCard extends StatelessWidget {
   final VoidCallback onPressShareBtn;
   final VoidCallback onPressSaveBtn;
 
-  const VideoNewsCard(
-      {super.key,
-      required this.videoUrl,
-      required this.dateString,
-      required this.videoNewsTitle,
-      required this.onPressSaveBtn,
-      required this.onPressShareBtn});
+  const VideoNewsCard({super.key, required this.videoUrl, required this.dateString, required this.videoNewsTitle, required this.onPressSaveBtn, required this.onPressShareBtn});
 
   @override
   Widget build(BuildContext context) {
@@ -42,17 +36,12 @@ class VideoNewsCard extends StatelessWidget {
                 InkWell(
                   onTap: onPressShareBtn,
                   child: Container(
-                    decoration: BoxDecoration(
-                        color: AppTheme.darkBackgroundColor,
-                        borderRadius: BorderRadius.circular(5.r)),
-                    padding:
-                        EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w),
+                    decoration: BoxDecoration(color: AppTheme.darkBackgroundColor, borderRadius: BorderRadius.circular(5.r)),
+                    padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w),
                     alignment: Alignment.center,
                     child: Text(
                       "SHARE",
-                      style: AppTextStyles.small.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.lightBackgroundColor),
+                      style: AppTextStyles.small.copyWith(fontWeight: FontWeight.bold, color: AppTheme.lightBackgroundColor),
                     ),
                   ),
                 ),

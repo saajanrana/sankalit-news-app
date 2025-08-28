@@ -1,17 +1,17 @@
+import 'package:Sankalit/viewmodels/news_viewmodel.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:news_app/core/app_text_style.dart';
-import 'package:news_app/core/theme.dart';
-import 'package:news_app/views/widgets/common_header.dart';
-import 'package:news_app/views/widgets/home_screen_widgets/home_add_section.dart';
-import 'package:news_app/views/widgets/home_screen_widgets/home_category_scroller.dart';
-import 'package:news_app/views/widgets/home_screen_widgets/top_home_carousel.dart';
+import 'package:Sankalit/core/app_text_style.dart';
+import 'package:Sankalit/core/theme.dart';
+import 'package:Sankalit/views/widgets/common_header.dart';
+import 'package:Sankalit/views/widgets/home_screen_widgets/home_add_section.dart';
+import 'package:Sankalit/views/widgets/home_screen_widgets/home_category_scroller.dart';
+import 'package:Sankalit/views/widgets/home_screen_widgets/top_home_carousel.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../core/constants.dart';
-import '../../viewmodels/news_viewmodel.dart';
 import '../widgets/custom_drawer.dart';
 import '../widgets/news_card.dart';
 import '../widgets/shimmer_loading.dart';
@@ -45,14 +45,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     // Load initial news
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(newsProvider.notifier).loadNews(refresh: true);
+      // ref.read(newsProvider.notifier).loadNews(refresh: true);
     });
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      ref.read(newsProvider.notifier).loadMore();
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      // ref.read(newsProvider.notifier).loadMore();
     }
   }
 
@@ -72,21 +71,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(
-                left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
+            padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
             child: const CommonHeader(),
           ),
           Expanded(
             child: RefreshIndicator(
-              onRefresh: () => ref.read(newsProvider.notifier).refresh(),
+              onRefresh: () async {},
               child: CustomScrollView(
                 controller: _scrollController,
                 slivers: [
                   const SliverToBoxAdapter(
                     child: BreakingNewsTicker(
                       breakingText: 'Breaking',
-                      newsText:
-                          'मुख्यमंत्री श्री पुष्कर सिंह धामी ने प्रधानमंत्री श्री नरेंद्र मोदी एवं | मुख्यमंत्री और अधिकारियों ने गैरसैंण में ‘एक पेड़ माँ के नाम’ अभियान के तहत किया पौधा रोपण.',
+                      newsText: 'मुख्यमंत्री श्री पुष्कर सिंह धामी ने प्रधानमंत्री श्री नरेंद्र मोदी एवं | मुख्यमंत्री और अधिकारियों ने गैरसैंण में ‘एक पेड़ माँ के नाम’ अभियान के तहत किया पौधा रोपण.',
                     ),
                   ),
 
@@ -118,19 +115,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         CarouselSlider(
                           items: [
                             _buildCarouselItem(
-                              imageUrl:
-                                  'https://sankalit.com/post_images/featured_1756050433.jpg',
-                              title:
-                                  'भूस्खलन से बद्रीनाथ राजमार्ग बंद, यात्री ...',
+                              imageUrl: 'https://sankalit.com/post_images/featured_1756050433.jpg',
+                              title: 'भूस्खलन से बद्रीनाथ राजमार्ग बंद, यात्री ...',
                             ),
                             _buildCarouselItem(
-                              imageUrl:
-                                  'https://sankalit.com/post_images/featured_1755962919.jpg',
+                              imageUrl: 'https://sankalit.com/post_images/featured_1755962919.jpg',
                               title: 'ताज़ा खबरें - जानिए क्या हुआ',
                             ),
                             _buildCarouselItem(
-                              imageUrl:
-                                  'https://sankalit.com/post_images/featured_1755962319.jpg',
+                              imageUrl: 'https://sankalit.com/post_images/featured_1755962319.jpg',
                               title: 'खेल जगत से जुड़ी बड़ी खबरें',
                             ),
                           ],
@@ -181,8 +174,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       height: 40.h,
                       width: double.infinity,
                       color: Colors.black,
-                      alignment: Alignment
-                          .centerLeft, // ✅ Centers vertically but left aligned
+                      alignment: Alignment.centerLeft, // ✅ Centers vertically but left aligned
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: Text(
                         'उत्तराखण्ड',
@@ -201,14 +193,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     SliverToBoxAdapter(
                       child: Center(
                         child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 16.w, vertical: 8.h),
+                          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                           child: Column(
                             children: [
                               Text(
                                 AppStrings.error,
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
+                                style: Theme.of(context).textTheme.headlineSmall,
                               ),
                               SizedBox(height: 8),
                               Text(
@@ -218,8 +208,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ),
                               SizedBox(height: 16),
                               ElevatedButton(
-                                onPressed: () =>
-                                    ref.read(newsProvider.notifier).refresh(),
+                                onPressed: () => {},
                                 child: const Text(AppStrings.retry),
                               ),
                             ],
@@ -235,8 +224,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             return Column(
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16.w, vertical: 8.h),
+                                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                                   child: NewsCard(news: newsState.news[index]),
                                 ),
                                 // ✅ Horizontal line after each item except the last one
@@ -257,8 +245,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           }
                           return null;
                         },
-                        childCount: newsState.news.length +
-                            (newsState.isLoading ? 1 : 0),
+                        childCount: newsState.news.length + (newsState.isLoading ? 1 : 0),
                       ),
                     ),
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
@@ -273,8 +260,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       height: 40.h,
                       width: double.infinity,
                       color: Colors.black,
-                      alignment: Alignment
-                          .centerLeft, // ✅ Centers vertically but left aligned
+                      alignment: Alignment.centerLeft, // ✅ Centers vertically but left aligned
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: Text(
                         'नैनीताल',
@@ -298,8 +284,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             children: [
                               Text(
                                 AppStrings.error,
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
+                                style: Theme.of(context).textTheme.headlineSmall,
                               ),
                               SizedBox(height: 5.h),
                               Text(
@@ -309,8 +294,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ),
                               SizedBox(height: 10.h),
                               ElevatedButton(
-                                onPressed: () =>
-                                    ref.read(newsProvider.notifier).refresh(),
+                                onPressed: () => {},
                                 child: const Text(AppStrings.retry),
                               ),
                             ],
@@ -320,8 +304,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     )
                   else
                     SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 0.60,
                       ),
@@ -331,10 +314,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             return Column(
                               children: [
                                 Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 16.w),
-                                  child: VerticalNewsCard(
-                                      news: newsState.news[index]),
+                                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                  child: VerticalNewsCard(news: newsState.news[index]),
                                 ),
                                 // Add divider if this is the last item in the row
                                 if ((index + 1) % 1 == 0)
@@ -348,13 +329,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ],
                             );
                           } else if (newsState.isLoading) {
-                            return const Center(
-                                child: CircularProgressIndicator());
+                            return const Center(child: CircularProgressIndicator());
                           }
                           return null;
                         },
-                        childCount: newsState.news.length +
-                            (newsState.isLoading ? 1 : 0),
+                        childCount: newsState.news.length + (newsState.isLoading ? 1 : 0),
                       ),
                     ),
                   // ✅ add Image section
@@ -368,8 +347,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       height: 40.h,
                       width: double.infinity,
                       color: Colors.black,
-                      alignment: Alignment
-                          .centerLeft, // ✅ Centers vertically but left aligned
+                      alignment: Alignment.centerLeft, // ✅ Centers vertically but left aligned
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: Text(
                         'चमोली',
@@ -392,8 +370,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             children: [
                               Text(
                                 AppStrings.error,
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
+                                style: Theme.of(context).textTheme.headlineSmall,
                               ),
                               SizedBox(height: 8),
                               Text(
@@ -403,8 +380,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ),
                               SizedBox(height: 16),
                               ElevatedButton(
-                                onPressed: () =>
-                                    ref.read(newsProvider.notifier).refresh(),
+                                onPressed: () => {},
                                 child: const Text(AppStrings.retry),
                               ),
                             ],
@@ -420,8 +396,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             return Column(
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16.w, vertical: 8.h),
+                                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                                   child: NewsCard(news: newsState.news[index]),
                                 ),
                                 // ✅ Horizontal line after each item except the last one
@@ -442,8 +417,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           }
                           return null;
                         },
-                        childCount: newsState.news.length +
-                            (newsState.isLoading ? 1 : 0),
+                        childCount: newsState.news.length + (newsState.isLoading ? 1 : 0),
                       ),
                     ),
                 ],
@@ -475,10 +449,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   color: Colors.grey.shade200,
                   child: Center(
                     child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes!
-                          : null,
+                      value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
                     ),
                   ),
                 );
