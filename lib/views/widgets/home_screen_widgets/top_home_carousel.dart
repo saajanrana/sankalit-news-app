@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:marquee/marquee.dart';
-import 'package:news_app/core/app_text_style.dart';
-import 'package:news_app/core/theme.dart';
+import 'package:Sankalit/core/app_text_style.dart';
+import 'package:Sankalit/core/theme.dart';
 
 class BreakingNewsTicker extends StatelessWidget {
   final String breakingText;
@@ -41,10 +41,10 @@ class BreakingNewsTicker extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Marquee(
                 text: newsText,
-                 style: AppTextStyles.body.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppTheme.lightBackgroundColor,
-                                  ),
+                style: AppTextStyles.body.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.lightBackgroundColor,
+                ),
                 scrollAxis: Axis.horizontal,
                 blankSpace: 50.w,
                 velocity: 40.0, // speed

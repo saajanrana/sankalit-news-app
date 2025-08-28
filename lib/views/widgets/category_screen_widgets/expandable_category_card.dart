@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:news_app/views/widgets/category_screen_widgets/category_card.dart';
+import 'package:Sankalit/views/widgets/category_screen_widgets/category_card.dart';
 
 class ExpandableCategoryCard extends StatefulWidget {
   final String title;

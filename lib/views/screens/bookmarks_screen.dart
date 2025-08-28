@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:news_app/core/app_text_style.dart';
-import 'package:news_app/core/theme.dart';
-import 'package:news_app/views/widgets/common_header.dart';
-import 'package:news_app/views/widgets/saved_screen_widgets/saved_news_toggle_btn.dart';
-import 'package:news_app/views/widgets/video_screen_widgets/video_news_card.dart';
+import 'package:Sankalit/core/app_text_style.dart';
+import 'package:Sankalit/core/theme.dart';
+import 'package:Sankalit/views/widgets/common_header.dart';
+import 'package:Sankalit/views/widgets/saved_screen_widgets/saved_news_toggle_btn.dart';
+import 'package:Sankalit/views/widgets/video_screen_widgets/video_news_card.dart';
 
 class BookmarksScreen extends StatefulWidget {
   const BookmarksScreen({super.key});

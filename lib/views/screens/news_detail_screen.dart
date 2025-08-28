@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:news_app/core/app_text_style.dart';
-import 'package:news_app/core/constants.dart';
-import 'package:news_app/core/theme.dart';
-import 'package:news_app/viewmodels/news_viewmodel.dart';
-import 'package:news_app/views/widgets/common_header.dart';
-import 'package:news_app/views/widgets/news_card.dart';
-import 'package:news_app/views/widgets/shimmer_loading.dart';
+import 'package:Sankalit/core/app_text_style.dart';
+import 'package:Sankalit/core/constants.dart';
+import 'package:Sankalit/core/theme.dart';
+import 'package:Sankalit/viewmodels/news_viewmodel.dart';
+import 'package:Sankalit/views/widgets/common_header.dart';
+import 'package:Sankalit/views/widgets/news_card.dart';
+import 'package:Sankalit/views/widgets/shimmer_loading.dart';
 
 import '../../models/news_model.dart';
 import '../../viewmodels/bookmark_viewmodel.dart';
@@ -29,8 +29,7 @@ class NewsDetailScreen extends ConsumerWidget {
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(
-                left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
+            padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
             child: const CommonHeader(),
           ),
           Expanded(
@@ -48,21 +47,17 @@ class NewsDetailScreen extends ConsumerWidget {
                             imageUrl: news.urlToImage!,
                             fit: BoxFit.cover,
                             placeholder: (context, url) => Container(
-                              color:
-                                  Theme.of(context).colorScheme.surfaceVariant,
+                              color: Theme.of(context).colorScheme.surfaceVariant,
                               child: const Center(
                                 child: CircularProgressIndicator(),
                               ),
                             ),
                             errorWidget: (context, url, error) => Container(
-                              color:
-                                  Theme.of(context).colorScheme.surfaceVariant,
+                              color: Theme.of(context).colorScheme.surfaceVariant,
                               child: Icon(
                                 Icons.image_not_supported,
                                 size: 50.sp,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                           )
@@ -71,9 +66,7 @@ class NewsDetailScreen extends ConsumerWidget {
                             child: Icon(
                               Icons.article,
                               size: 50.sp,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           ),
                   ),
@@ -88,11 +81,7 @@ class NewsDetailScreen extends ConsumerWidget {
                       children: [
                         Text(
                           news.title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.bold, height: 1.3),
+                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold, height: 1.3),
                         ),
                         SizedBox(height: 12.h),
 
@@ -110,12 +99,8 @@ class NewsDetailScreen extends ConsumerWidget {
                               ),
                             SizedBox(width: 8.w),
                             Text(
-                              DateFormat('dd-MMM-yyyy')
-                                  .format(news.publishedAt),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(color: Colors.grey),
+                              DateFormat('dd-MMM-yyyy').format(news.publishedAt),
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
                             ),
                             InkWell(
                               onTap: () {},
@@ -124,8 +109,7 @@ class NewsDetailScreen extends ConsumerWidget {
                                   color: AppTheme.darkBackgroundColor,
                                   borderRadius: BorderRadius.circular(5.r),
                                 ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 5.h, horizontal: 10.w),
+                                padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w),
                                 alignment: Alignment.center,
                                 child: Text(
                                   "SHARE",
@@ -138,9 +122,7 @@ class NewsDetailScreen extends ConsumerWidget {
                             ),
                             IconButton(
                               icon: Image.asset(
-                                isBookmarked
-                                    ? 'assets/icons/bookmarkActive.png'
-                                    : 'assets/icons/bookmark.png',
+                                isBookmarked ? 'assets/icons/bookmarkActive.png' : 'assets/icons/bookmark.png',
                                 width: 24.w,
                                 height: 24.h,
                               ),
@@ -156,15 +138,11 @@ class NewsDetailScreen extends ConsumerWidget {
                         if (news.author != null) ...[
                           Row(
                             children: [
-                              Icon(Icons.person,
-                                  size: 16.sp, color: Colors.grey),
+                              Icon(Icons.person, size: 16.sp, color: Colors.grey),
                               SizedBox(width: 4.w),
                               Text(
                                 'By ${news.author}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(color: Colors.grey),
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
                               ),
                             ],
                           ),
@@ -174,10 +152,7 @@ class NewsDetailScreen extends ConsumerWidget {
                         if (news.description != null) ...[
                           Text(
                             news.description!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(height: 1.5, color: Colors.black87),
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(height: 1.5, color: Colors.black87),
                           ),
                           SizedBox(height: 20.h),
                         ],
@@ -185,10 +160,7 @@ class NewsDetailScreen extends ConsumerWidget {
                         if (news.content != null) ...[
                           Text(
                             news.content!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(height: 1.6),
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6),
                           ),
                           SizedBox(height: 20.h),
                         ],
@@ -229,17 +201,12 @@ class NewsDetailScreen extends ConsumerWidget {
                         padding: const EdgeInsets.all(16),
                         child: Column(
                           children: [
-                            Text(AppStrings.error,
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall),
+                            Text(AppStrings.error, style: Theme.of(context).textTheme.headlineSmall),
                             SizedBox(height: 8),
-                            Text(newsState.error!,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                                textAlign: TextAlign.center),
+                            Text(newsState.error!, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
                             SizedBox(height: 16),
                             ElevatedButton(
-                              onPressed: () =>
-                                  ref.read(newsProvider.notifier).refresh(),
+                              onPressed: () => ref.read(newsProvider.notifier).refresh(),
                               child: const Text(AppStrings.retry),
                             ),
                           ],
@@ -251,8 +218,7 @@ class NewsDetailScreen extends ConsumerWidget {
                   SliverPadding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     sliver: SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 0.70,
                         mainAxisSpacing: 10,
@@ -261,16 +227,13 @@ class NewsDetailScreen extends ConsumerWidget {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           if (index < newsState.news.length) {
-                            return VerticalNewsCard(
-                                news: newsState.news[index]);
+                            return VerticalNewsCard(news: newsState.news[index]);
                           } else if (newsState.isLoading) {
-                            return const Center(
-                                child: CircularProgressIndicator());
+                            return const Center(child: CircularProgressIndicator());
                           }
                           return null;
                         },
-                        childCount: newsState.news.length +
-                            (newsState.isLoading ? 1 : 0),
+                        childCount: newsState.news.length + (newsState.isLoading ? 1 : 0),
                       ),
                     ),
                   ),

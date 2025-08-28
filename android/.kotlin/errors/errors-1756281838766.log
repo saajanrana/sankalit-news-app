@@ -41,7 +41,7 @@ java.lang.Exception
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
 	at java.base/java.lang.Thread.run(Thread.java:842)
-Caused by: java.lang.AssertionError: java.lang.Exception: Could not close incremental caches in D:\WITDS\sankalit\build\shared_preferences_android\kotlin\compileDebugKotlin\cacheable\caches-jvm\jvm\kotlin: class-fq-name-to-source.tab, source-to-classes.tab, internal-name-to-source.tab
+Caused by: java.lang.AssertionError: java.lang.Exception: Could not close incremental caches in D:\WITDS\sankalit\build\shared_preferences_android\kotlin\compileReleaseKotlin\cacheable\caches-jvm\jvm\kotlin: class-fq-name-to-source.tab, source-to-classes.tab, internal-name-to-source.tab
 	at org.jetbrains.kotlin.com.google.common.io.Closer.close(Closer.java:236)
 	at org.jetbrains.kotlin.incremental.IncrementalCachesManager.close(IncrementalCachesManager.kt:55)
 	at kotlin.io.CloseableKt.closeFinally(Closeable.kt:56)
@@ -65,12 +65,12 @@ Caused by: java.lang.AssertionError: java.lang.Exception: Could not close increm
 	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
 	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(TCPTransport.java:704)
 	... 3 more
-Caused by: java.lang.Exception: Could not close incremental caches in D:\WITDS\sankalit\build\shared_preferences_android\kotlin\compileDebugKotlin\cacheable\caches-jvm\jvm\kotlin: class-fq-name-to-source.tab, source-to-classes.tab, internal-name-to-source.tab
+Caused by: java.lang.Exception: Could not close incremental caches in D:\WITDS\sankalit\build\shared_preferences_android\kotlin\compileReleaseKotlin\cacheable\caches-jvm\jvm\kotlin: class-fq-name-to-source.tab, source-to-classes.tab, internal-name-to-source.tab
 	at org.jetbrains.kotlin.incremental.storage.BasicMapsOwner.forEachMapSafe(BasicMapsOwner.kt:95)
 	at org.jetbrains.kotlin.incremental.storage.BasicMapsOwner.close(BasicMapsOwner.kt:53)
 	at org.jetbrains.kotlin.com.google.common.io.Closer.close(Closer.java:223)
 	... 24 more
-	Suppressed: java.lang.IllegalArgumentException: this and base files have different roots: C:\Users\LENOVO\AppData\Local\Pub\Cache\hosted\pub.dev\shared_preferences_android-2.4.11\android\src\main\kotlin\io\flutter\plugins\sharedpreferences\MessagesAsync.g.kt and D:\WITDS\sankalit\android.
+	Suppressed: java.lang.IllegalArgumentException: this and base files have different roots: C:\Users\LENOVO\AppData\Local\Pub\Cache\hosted\pub.dev\shared_preferences_android-2.4.12\android\src\main\kotlin\io\flutter\plugins\sharedpreferences\MessagesAsync.g.kt and D:\WITDS\sankalit\android.
 		at kotlin.io.FilesKt__UtilsKt.toRelativeString(Utils.kt:117)
 		at kotlin.io.FilesKt__UtilsKt.relativeTo(Utils.kt:128)
 		at org.jetbrains.kotlin.incremental.storage.RelocatableFileToPathConverter.toPath(RelocatableFileToPathConverter.kt:24)
@@ -87,7 +87,7 @@ Caused by: java.lang.Exception: Could not close incremental caches in D:\WITDS\s
 		at org.jetbrains.kotlin.incremental.storage.BasicMapsOwner$close$1.invoke(BasicMapsOwner.kt:53)
 		at org.jetbrains.kotlin.incremental.storage.BasicMapsOwner.forEachMapSafe(BasicMapsOwner.kt:87)
 		... 26 more
-	Suppressed: java.lang.IllegalArgumentException: this and base files have different roots: C:\Users\LENOVO\AppData\Local\Pub\Cache\hosted\pub.dev\shared_preferences_android-2.4.11\android\src\main\kotlin\io\flutter\plugins\sharedpreferences\MessagesAsync.g.kt and D:\WITDS\sankalit\android.
+	Suppressed: java.lang.IllegalArgumentException: this and base files have different roots: C:\Users\LENOVO\AppData\Local\Pub\Cache\hosted\pub.dev\shared_preferences_android-2.4.12\android\src\main\kotlin\io\flutter\plugins\sharedpreferences\MessagesAsync.g.kt and D:\WITDS\sankalit\android.
 		at kotlin.io.FilesKt__UtilsKt.toRelativeString(Utils.kt:117)
 		at kotlin.io.FilesKt__UtilsKt.relativeTo(Utils.kt:128)
 		at org.jetbrains.kotlin.incremental.storage.RelocatableFileToPathConverter.toPath(RelocatableFileToPathConverter.kt:24)
@@ -109,7 +109,7 @@ Caused by: java.lang.Exception: Could not close incremental caches in D:\WITDS\s
 		at org.jetbrains.kotlin.incremental.storage.BasicMapsOwner$close$1.invoke(BasicMapsOwner.kt:53)
 		at org.jetbrains.kotlin.incremental.storage.BasicMapsOwner.forEachMapSafe(BasicMapsOwner.kt:87)
 		... 26 more
-	Suppressed: java.lang.IllegalArgumentException: this and base files have different roots: C:\Users\LENOVO\AppData\Local\Pub\Cache\hosted\pub.dev\shared_preferences_android-2.4.11\android\src\main\kotlin\io\flutter\plugins\sharedpreferences\MessagesAsync.g.kt and D:\WITDS\sankalit\android.
+	Suppressed: java.lang.IllegalArgumentException: this and base files have different roots: C:\Users\LENOVO\AppData\Local\Pub\Cache\hosted\pub.dev\shared_preferences_android-2.4.12\android\src\main\kotlin\io\flutter\plugins\sharedpreferences\MessagesAsync.g.kt and D:\WITDS\sankalit\android.
 		at kotlin.io.FilesKt__UtilsKt.toRelativeString(Utils.kt:117)
 		at kotlin.io.FilesKt__UtilsKt.relativeTo(Utils.kt:128)
 		at org.jetbrains.kotlin.incremental.storage.RelocatableFileToPathConverter.toPath(RelocatableFileToPathConverter.kt:24)
@@ -129,12 +129,12 @@ Caused by: java.lang.Exception: Could not close incremental caches in D:\WITDS\s
 		at org.jetbrains.kotlin.incremental.storage.BasicMapsOwner$close$1.invoke(BasicMapsOwner.kt:53)
 		at org.jetbrains.kotlin.incremental.storage.BasicMapsOwner.forEachMapSafe(BasicMapsOwner.kt:87)
 		... 26 more
-	Suppressed: java.lang.Exception: Could not close incremental caches in D:\WITDS\sankalit\build\shared_preferences_android\kotlin\compileDebugKotlin\cacheable\caches-jvm\lookups: id-to-file.tab, file-to-id.tab
+	Suppressed: java.lang.Exception: Could not close incremental caches in D:\WITDS\sankalit\build\shared_preferences_android\kotlin\compileReleaseKotlin\cacheable\caches-jvm\lookups: id-to-file.tab, file-to-id.tab
 		at org.jetbrains.kotlin.incremental.storage.BasicMapsOwner.forEachMapSafe(BasicMapsOwner.kt:95)
 		at org.jetbrains.kotlin.incremental.storage.BasicMapsOwner.close(BasicMapsOwner.kt:53)
 		at org.jetbrains.kotlin.incremental.LookupStorage.close(LookupStorage.kt:155)
 		... 25 more
-		Suppressed: java.lang.IllegalArgumentException: this and base files have different roots: C:\Users\LENOVO\AppData\Local\Pub\Cache\hosted\pub.dev\shared_preferences_android-2.4.11\android\src\main\kotlin\io\flutter\plugins\sharedpreferences\MessagesAsync.g.kt and D:\WITDS\sankalit\android.
+		Suppressed: java.lang.IllegalArgumentException: this and base files have different roots: C:\Users\LENOVO\AppData\Local\Pub\Cache\hosted\pub.dev\shared_preferences_android-2.4.12\android\src\main\kotlin\io\flutter\plugins\sharedpreferences\MessagesAsync.g.kt and D:\WITDS\sankalit\android.
 			at kotlin.io.FilesKt__UtilsKt.toRelativeString(Utils.kt:117)
 			at kotlin.io.FilesKt__UtilsKt.relativeTo(Utils.kt:128)
 			at org.jetbrains.kotlin.incremental.storage.RelocatableFileToPathConverter.toPath(RelocatableFileToPathConverter.kt:24)
@@ -151,7 +151,7 @@ Caused by: java.lang.Exception: Could not close incremental caches in D:\WITDS\s
 			at org.jetbrains.kotlin.incremental.storage.BasicMapsOwner$close$1.invoke(BasicMapsOwner.kt:53)
 			at org.jetbrains.kotlin.incremental.storage.BasicMapsOwner.forEachMapSafe(BasicMapsOwner.kt:87)
 			... 27 more
-		Suppressed: java.lang.IllegalArgumentException: this and base files have different roots: C:\Users\LENOVO\AppData\Local\Pub\Cache\hosted\pub.dev\shared_preferences_android-2.4.11\android\src\main\kotlin\io\flutter\plugins\sharedpreferences\MessagesAsync.g.kt and D:\WITDS\sankalit\android.
+		Suppressed: java.lang.IllegalArgumentException: this and base files have different roots: C:\Users\LENOVO\AppData\Local\Pub\Cache\hosted\pub.dev\shared_preferences_android-2.4.12\android\src\main\kotlin\io\flutter\plugins\sharedpreferences\MessagesAsync.g.kt and D:\WITDS\sankalit\android.
 			at kotlin.io.FilesKt__UtilsKt.toRelativeString(Utils.kt:117)
 			at kotlin.io.FilesKt__UtilsKt.relativeTo(Utils.kt:128)
 			at org.jetbrains.kotlin.incremental.storage.RelocatableFileToPathConverter.toPath(RelocatableFileToPathConverter.kt:24)
@@ -172,9 +172,9 @@ Caused by: java.lang.Exception: Could not close incremental caches in D:\WITDS\s
 			at org.jetbrains.kotlin.incremental.storage.BasicMapsOwner$close$1.invoke(BasicMapsOwner.kt:53)
 			at org.jetbrains.kotlin.incremental.storage.BasicMapsOwner.forEachMapSafe(BasicMapsOwner.kt:87)
 			... 27 more
-	Suppressed: java.lang.Exception: Could not close incremental caches in D:\WITDS\sankalit\build\shared_preferences_android\kotlin\compileDebugKotlin\cacheable\caches-jvm\inputs: source-to-output.tab
+	Suppressed: java.lang.Exception: Could not close incremental caches in D:\WITDS\sankalit\build\shared_preferences_android\kotlin\compileReleaseKotlin\cacheable\caches-jvm\inputs: source-to-output.tab
 		... 27 more
-		Suppressed: java.lang.IllegalArgumentException: this and base files have different roots: C:\Users\LENOVO\AppData\Local\Pub\Cache\hosted\pub.dev\shared_preferences_android-2.4.11\android\src\main\kotlin\io\flutter\plugins\sharedpreferences\MessagesAsync.g.kt and D:\WITDS\sankalit\android.
+		Suppressed: java.lang.IllegalArgumentException: this and base files have different roots: C:\Users\LENOVO\AppData\Local\Pub\Cache\hosted\pub.dev\shared_preferences_android-2.4.12\android\src\main\kotlin\io\flutter\plugins\sharedpreferences\MessagesAsync.g.kt and D:\WITDS\sankalit\android.
 			at kotlin.io.FilesKt__UtilsKt.toRelativeString(Utils.kt:117)
 			at kotlin.io.FilesKt__UtilsKt.relativeTo(Utils.kt:128)
 			at org.jetbrains.kotlin.incremental.storage.RelocatableFileToPathConverter.toPath(RelocatableFileToPathConverter.kt:24)

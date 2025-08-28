@@ -1,31 +1,11 @@
-import 'package:hive/hive.dart';
-
-part 'news_model.g.dart';
-
-@HiveType(typeId: 0)
-class NewsModel extends HiveObject {
-  @HiveField(0)
+class NewsModel {
   final String? author;
-  
-  @HiveField(1)
   final String title;
-  
-  @HiveField(2)
   final String? description;
-  
-  @HiveField(3)
   final String url;
-  
-  @HiveField(4)
   final String? urlToImage;
-  
-  @HiveField(5)
   final DateTime publishedAt;
-  
-  @HiveField(6)
   final String? content;
-  
-  @HiveField(7)
   final SourceModel? source;
 
   NewsModel({
@@ -75,12 +55,8 @@ class NewsModel extends HiveObject {
   int get hashCode => url.hashCode;
 }
 
-@HiveType(typeId: 1)
-class SourceModel extends HiveObject {
-  @HiveField(0)
+class SourceModel {
   final String? id;
-  
-  @HiveField(1)
   final String name;
 
   SourceModel({

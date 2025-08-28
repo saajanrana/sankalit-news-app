@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:news_app/core/theme.dart';
+import 'package:Sankalit/core/theme.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 
