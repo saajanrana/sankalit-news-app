@@ -5,9 +5,9 @@ import 'package:news_app/core/theme.dart';
 
 class SavedNewsToggleBtn extends StatefulWidget {
   final bool isTextNewsIsSelected;
-  final VoidCallback onSaveBtnPress;
+  final VoidCallback onVideoBtnPress;
   final VoidCallback onNewsBtnPress;
-  const SavedNewsToggleBtn({super.key, required this.isTextNewsIsSelected, required this.onNewsBtnPress, required this.onSaveBtnPress});
+  const SavedNewsToggleBtn({super.key, required this.isTextNewsIsSelected, required this.onNewsBtnPress, required this.onVideoBtnPress});
 
   @override
   State<SavedNewsToggleBtn> createState() => _SavedNewsToggleBtnState();
@@ -39,7 +39,7 @@ class _SavedNewsToggleBtnState extends State<SavedNewsToggleBtn> {
           SizedBox(width: 10.w),
           Expanded(
             child: InkWell(
-              onTap: widget.onSaveBtnPress,
+              onTap: widget.onVideoBtnPress,
               child: Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(color: widget.isTextNewsIsSelected ? AppTheme.darkBackgroundColor.withOpacity(0.10) : AppTheme.primaryColor, borderRadius: BorderRadius.circular(4.r)),
@@ -53,6 +53,5 @@ class _SavedNewsToggleBtnState extends State<SavedNewsToggleBtn> {
         ],
       ),
     );
-    ;
   }
 }

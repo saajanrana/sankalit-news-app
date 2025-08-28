@@ -36,7 +36,6 @@ class VideoNewsCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Thumbnail with play button
             ClipRRect(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(12.r),

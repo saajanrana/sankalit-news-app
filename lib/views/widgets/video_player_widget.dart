@@ -1,8 +1,8 @@
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:news_app/core/theme.dart';
 import 'package:video_player/video_player.dart';
-import 'package:chewie/chewie.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
@@ -74,7 +74,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       clipBehavior: Clip.antiAlias,
       child: SizedBox(
         width: double.infinity,
-        height: 250.h,
+        height: 190.h,
         child: _isInitialized && _chewieController != null
             ? Chewie(controller: _chewieController!)
             : Center(

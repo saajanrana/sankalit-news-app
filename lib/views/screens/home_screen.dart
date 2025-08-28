@@ -67,6 +67,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final newsState = ref.watch(newsProvider);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       endDrawer: const CustomDrawer(),
       body: Column(
         children: [
@@ -108,9 +109,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           child: Text(
                             'TRENDING NEWS',
                             style: AppTextStyles.heading1.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppTheme.lightTextPrimary,
-                                  ),
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.lightTextPrimary,
+                            ),
                           ),
                         ),
                         SizedBox(height: 10.h),
@@ -185,10 +186,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: Text(
                         'उत्तराखण्ड',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.sp,
+                        style: AppTextStyles.heading2Hindi.copyWith(
                           fontWeight: FontWeight.bold,
+                          color: AppTheme.darkTextPrimary,
                         ),
                       ),
                     ),
@@ -278,10 +278,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: Text(
                         'नैनीताल',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.sp,
+                       style: AppTextStyles.heading2Hindi.copyWith(
                           fontWeight: FontWeight.bold,
+                          color: AppTheme.darkTextPrimary,
                         ),
                       ),
                     ),
@@ -294,7 +293,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     SliverToBoxAdapter(
                       child: Center(
                         child: Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: EdgeInsets.all(6.h),
                           child: Column(
                             children: [
                               Text(
@@ -302,13 +301,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 style:
                                     Theme.of(context).textTheme.headlineSmall,
                               ),
-                              SizedBox(height: 8),
+                              SizedBox(height: 5.h),
                               Text(
                                 newsState.error!,
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(height: 16),
+                              SizedBox(height: 10.h),
                               ElevatedButton(
                                 onPressed: () =>
                                     ref.read(newsProvider.notifier).refresh(),
@@ -324,7 +323,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        childAspectRatio: 0.70,
+                        childAspectRatio: 0.60,
                       ),
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
@@ -340,8 +339,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 // Add divider if this is the last item in the row
                                 if ((index + 1) % 1 == 0)
                                   Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+                                    padding: EdgeInsets.symmetric( vertical: 8.h),
                                     child: Divider(
                                       thickness: 1,
                                       color: Colors.grey.withOpacity(0.3),
@@ -375,10 +373,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: Text(
                         'चमोली',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.sp,
+                        style: AppTextStyles.heading2Hindi.copyWith(
                           fontWeight: FontWeight.bold,
+                          color: AppTheme.darkTextPrimary,
                         ),
                       ),
                     ),
@@ -528,11 +525,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Text(
                 title,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  height: 1.3,
+                style: AppTextStyles.bodyHindi.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.darkTextPrimary,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,

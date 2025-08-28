@@ -51,6 +51,7 @@ dependencies:
   smooth_page_indicator: ^1.2.1
   marquee: ^2.3.0
   flutter_native_splash: ^2.4.6
+  flutter_html: ^3.0.0
 
 
 dev_dependencies:

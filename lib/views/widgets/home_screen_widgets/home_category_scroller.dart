@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/core/app_text_style.dart';
+import 'package:news_app/core/theme.dart';
 
 class HorizontalCategoryTabs extends StatefulWidget {
   final List<String> categories;
@@ -52,11 +54,10 @@ class _HorizontalCategoryTabsState extends State<HorizontalCategoryTabs> {
               child: Center(
                 child: Text(
                   widget.categories[index],
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
+                   style: AppTextStyles.heading3Hindi.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.darkTextPrimary,
+                                  ),
                 ),
               ),
             ),

@@ -18,6 +18,10 @@ class NewsDetailScreen extends ConsumerWidget {
   final NewsModel news;
 
   const NewsDetailScreen({super.key, required this.news});
+  String removeHtmlTags(String htmlString) {
+    final RegExp exp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: true);
+    return htmlString.replaceAll(exp, '');
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,6 +30,7 @@ class NewsDetailScreen extends ConsumerWidget {
     final newsState = ref.watch(newsProvider);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Padding(
@@ -88,11 +93,9 @@ class NewsDetailScreen extends ConsumerWidget {
                       children: [
                         Text(
                           news.title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.bold, height: 1.3),
+                          style: AppTextStyles.heading1Hindi.copyWith(
+                                  color: AppTheme.lightTextPrimary, 
+                                ),
                         ),
                         SizedBox(height: 12.h),
 
@@ -103,7 +106,7 @@ class NewsDetailScreen extends ConsumerWidget {
                             if (news.source?.name != null)
                               Text(
                                 "उत्तराखण्ड",
-                                style: AppTextStyles.heading3.copyWith(
+                                style: AppTextStyles.heading3Hindi.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: AppTheme.lightTextPrimary,
                                 ),
@@ -112,10 +115,9 @@ class NewsDetailScreen extends ConsumerWidget {
                             Text(
                               DateFormat('dd-MMM-yyyy')
                                   .format(news.publishedAt),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(color: Colors.grey),
+                               style: AppTextStyles.smallHindi.copyWith(
+                                  color: AppTheme.lightTextPrimary,
+                                ),
                             ),
                             InkWell(
                               onTap: () {},
@@ -129,7 +131,7 @@ class NewsDetailScreen extends ConsumerWidget {
                                 alignment: Alignment.center,
                                 child: Text(
                                   "SHARE",
-                                  style: AppTextStyles.small.copyWith(
+                                  style: AppTextStyles.bodyBoldHindi.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: AppTheme.lightBackgroundColor,
                                   ),
@@ -150,48 +152,46 @@ class NewsDetailScreen extends ConsumerWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 16.h),
-
-                        // ✅ Author
+                        SizedBox(height: 20.h),
+                        Divider(
+                          thickness: 1,
+                          color: Colors.grey.withOpacity(0.3),
+                        ),
+                        SizedBox(height: 8.h),
                         if (news.author != null) ...[
-                          Row(
-                            children: [
-                              Icon(Icons.person,
-                                  size: 16.sp, color: Colors.grey),
-                              SizedBox(width: 4.w),
-                              Text(
-                                'By ${news.author}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 16.h),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w,
+                                vertical: 4.h), // Padding inside the box
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade200, // Background color
+                              borderRadius:
+                                  BorderRadius.circular(8.r), // Rounded corners
+                            ),
+                            child: Text(
+                              '# ${news.author}',
+                               style: AppTextStyles.smallHindi.copyWith(
+                          color: AppTheme.lightTextPrimary,
+                       
+                        ),
+                            ),
+                          )
                         ],
+                        SizedBox(height: 8.h),
+                        Divider(
+                          thickness: 1,
+                          color: Colors.grey.withOpacity(0.3),
+                        ),
+                        // ✅ Author
 
                         if (news.description != null) ...[
                           Text(
-                            news.description!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(height: 1.5, color: Colors.black87),
+                            removeHtmlTags(news.description!),
+                            style: AppTextStyles.bodyHindi,
                           ),
                           SizedBox(height: 20.h),
                         ],
-
-                        if (news.content != null) ...[
-                          Text(
-                            news.content!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(height: 1.6),
-                          ),
-                          SizedBox(height: 20.h),
-                        ],
+                     
                       ],
                     ),
                   ),
@@ -207,11 +207,10 @@ class NewsDetailScreen extends ConsumerWidget {
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Text(
                       'READ MORE',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: AppTextStyles.heading2.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.darkTextPrimary,
+                        ),
                     ),
                   ),
                 ),
@@ -220,23 +219,27 @@ class NewsDetailScreen extends ConsumerWidget {
                 SliverToBoxAdapter(child: SizedBox(height: 10.h)),
 
                 // ✅ Loading/Error or Grid
+                // ✅ grid News list section
                 if (newsState.isLoading && newsState.news.isEmpty)
                   const SliverToBoxAdapter(child: ShimmerLoading())
                 else if (newsState.error != null && newsState.news.isEmpty)
                   SliverToBoxAdapter(
                     child: Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: EdgeInsets.all(6.h),
                         child: Column(
                           children: [
-                            Text(AppStrings.error,
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall),
-                            SizedBox(height: 8),
-                            Text(newsState.error!,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                                textAlign: TextAlign.center),
-                            SizedBox(height: 16),
+                            Text(
+                              AppStrings.error,
+                              style: Theme.of(context).textTheme.headlineSmall,
+                            ),
+                            SizedBox(height: 5.h),
+                            Text(
+                              newsState.error!,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 10.h),
                             ElevatedButton(
                               onPressed: () =>
                                   ref.read(newsProvider.notifier).refresh(),
@@ -248,30 +251,40 @@ class NewsDetailScreen extends ConsumerWidget {
                     ),
                   )
                 else
-                  SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    sliver: SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.70,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          if (index < newsState.news.length) {
-                            return VerticalNewsCard(
-                                news: newsState.news[index]);
-                          } else if (newsState.isLoading) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          }
-                          return null;
-                        },
-                        childCount: newsState.news.length +
-                            (newsState.isLoading ? 1 : 0),
-                      ),
+                  SliverGrid(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.60,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        if (index < newsState.news.length) {
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                child: VerticalNewsCard(news: newsState.news[index]),
+                              ),
+                              // Add divider if this is the last item in the row
+                              if ((index + 1) % 1 == 0)
+                                Padding(
+                                  padding: EdgeInsets.symmetric( vertical: 8.h),
+                                  child: Divider(
+                                    thickness: 1,
+                                    color: Colors.grey.withOpacity(0.3),
+                                  ),
+                                ),
+                            ],
+                          );
+                        } else if (newsState.isLoading) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                        return null;
+                      },
+                      childCount:
+                          newsState.news.length + (newsState.isLoading ? 1 : 0),
                     ),
                   ),
               ],

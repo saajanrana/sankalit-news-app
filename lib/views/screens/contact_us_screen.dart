@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:news_app/core/app_text_style.dart';
 import 'package:news_app/core/theme.dart';
 import 'package:news_app/views/widgets/common_header.dart';
@@ -23,12 +22,12 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
         height: double.infinity,
         color: AppTheme.lightBackgroundColor,
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20.h),
+              SizedBox(height: 30.h),
               const CommonHeader(),
               SizedBox(height: 20.h),
               const Text(
@@ -57,16 +56,16 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                     },
                     child: Image.asset(
                       "assets/icons/facebookIcon.png",
-                      width: 20.w,
-                      height: 20.h,
+                      width: 40.w,
+                      height: 40.h,
                     ),
                   ),
                   SizedBox(width: 2.w),
                   InkWell(
                     child: Image.asset(
                       "assets/icons/xIcon.png",
-                      width: 20.w,
-                      height: 20.h,
+                      width: 40.w,
+                      height: 40.h,
                     ),
                   ),
                   SizedBox(width: 2.w),
@@ -80,8 +79,8 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                     },
                     child: Image.asset(
                       "assets/icons/youtubeIcon.png",
-                      width: 20.w,
-                      height: 20.h,
+                      width: 40.w,
+                      height: 40.h,
                     ),
                   )
                 ],

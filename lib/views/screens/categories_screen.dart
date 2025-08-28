@@ -74,12 +74,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         height: double.infinity,
         color: AppTheme.lightBackgroundColor,
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20.h),
+              SizedBox(height: 30.h),
               const CommonHeader(),
               SizedBox(height: 20.h),
               const Text("CATEGORY", style: AppTextStyles.bodyBold),

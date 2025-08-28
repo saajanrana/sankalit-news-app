@@ -77,11 +77,14 @@ class AppTextStyles {
     fontFamily: 'JosefinSans',
     fontSize: 14,
     color: Colors.grey,
+    fontWeight: FontWeight.w500, 
   );
 
   static const TextStyle smallHindi = TextStyle(
     fontFamily: 'Baloo2',
     fontSize: 14,
     color: Colors.grey,
+    fontWeight: FontWeight.w500,
   );
 }
+

@@ -28,7 +28,6 @@ class BreakingNewsTicker extends StatelessWidget {
             child: Text(
               breakingText,
               style: AppTextStyles.heading3.copyWith(
-                fontWeight: FontWeight.bold,
                 color: AppTheme.lightBackgroundColor,
               ),
             ),

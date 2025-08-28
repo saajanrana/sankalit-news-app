@@ -41,12 +41,12 @@ class _VideoNewsScreenState extends State<VideoNewsScreen> {
             height: double.infinity,
             color: AppTheme.lightBackgroundColor,
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 30.h),
                   const CommonHeader(),
                   SizedBox(height: 20.h),
                   Text(
@@ -61,7 +61,7 @@ class _VideoNewsScreenState extends State<VideoNewsScreen> {
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: EdgeInsets.symmetric(vertical: 10.h),
-                        child: VideoNewsCard(
+                        child: VideoNewsCard( 
                           videoUrl: "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
                           videoNewsTitle: "बागेश्वर के हरबाड़ में भारी बारिश और भूस्खलन से तबाही, कई घर क्षतिग्रस्त",
                           dateString: "19-05-2025",
