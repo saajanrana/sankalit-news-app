@@ -10,10 +10,10 @@ import 'package:http/http.dart' as http;
 import 'package:Sankalit/core/theme.dart';
 
 final apiUrl = dotenv.env['API_URL'];
-final apiKey = dotenv.env['API_KEY'];
+final accessToken = dotenv.env['API_KEY'];
 
 class ApiServices {
-  static dynamic post({required String endpoint, String accessToken = "", Map<String, dynamic> queryParameters = const {}}) async {
+  static dynamic post({required String endpoint, Map<String, dynamic> queryParameters = const {}}) async {
     try {
       bool internetConnectionStatus = await InternetConnection().hasInternetAccess;
       if (!internetConnectionStatus) {
@@ -67,7 +67,6 @@ class ApiServices {
 
   static dynamic get({
     required String endpoint,
-    String accessToken = "",
     dynamic queryParameters,
   }) async {
     try {

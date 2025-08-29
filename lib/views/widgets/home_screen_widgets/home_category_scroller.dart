@@ -1,6 +1,6 @@
+import 'package:Sankalit/core/app_text_style.dart';
+import 'package:Sankalit/core/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:news_app/core/app_text_style.dart';
-import 'package:news_app/core/theme.dart';
 
 class HorizontalCategoryTabs extends StatefulWidget {
   final List<String> categories;
@@ -54,10 +54,10 @@ class _HorizontalCategoryTabsState extends State<HorizontalCategoryTabs> {
               child: Center(
                 child: Text(
                   widget.categories[index],
-                   style: AppTextStyles.heading3Hindi.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppTheme.darkTextPrimary,
-                                  ),
+                  style: AppTextStyles.heading3Hindi.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.darkTextPrimary,
+                  ),
                 ),
               ),
             ),

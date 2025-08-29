@@ -1,16 +1,15 @@
+import 'package:Sankalit/core/app_text_style.dart';
+import 'package:Sankalit/core/constants.dart';
+import 'package:Sankalit/core/theme.dart';
+import 'package:Sankalit/viewmodels/news_viewmodel.dart';
+import 'package:Sankalit/views/widgets/common_header.dart';
+import 'package:Sankalit/views/widgets/news_card.dart';
+import 'package:Sankalit/views/widgets/saved_screen_widgets/saved_news_toggle_btn.dart';
+import 'package:Sankalit/views/widgets/shimmer_loading.dart';
+import 'package:Sankalit/views/widgets/video_screen_widgets/video_news_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:news_app/core/app_text_style.dart';
-import 'package:news_app/core/constants.dart';
-import 'package:news_app/core/theme.dart';
-import 'package:news_app/viewmodels/news_viewmodel.dart';
-import 'package:news_app/views/widgets/common_header.dart';
-import 'package:news_app/views/widgets/news_card.dart';
-import 'package:news_app/views/widgets/saved_screen_widgets/saved_news_toggle_btn.dart';
-import 'package:news_app/views/widgets/shimmer_loading.dart';
-import 'package:news_app/views/widgets/video_screen_widgets/video_news_card.dart';
-
 
 class BookmarksScreen extends ConsumerStatefulWidget {
   const BookmarksScreen({super.key});
@@ -64,9 +63,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
 
               // Content Area (News or Videos)
               Expanded(
-                child: isTextNewsIsSelected
-                    ? _buildNewsList(newsState)
-                    : _buildVideoList(),
+                child: isTextNewsIsSelected ? _buildNewsList(newsState) : _buildVideoList(),
               ),
             ],
           ),
@@ -119,22 +116,22 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
 
   /// Build Video List
   Widget _buildVideoList() {
-    return  Expanded(
-                      child: ListView.builder(
-                    padding: EdgeInsets.all(0.sp),
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.h),
-                        child: VideoNewsCard( 
-                          videoUrl: "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
-                          videoNewsTitle: "बागेश्वर के हरबाड़ में भारी बारिश और भूस्खलन से तबाही, कई घर क्षतिग्रस्त",
-                          dateString: "19-05-2025",
-                          onPressSaveBtn: () {},
-                          onPressShareBtn: () {},
-                        ),
-                      );
-                    },
-                  ));
+    return Expanded(
+        child: ListView.builder(
+      padding: EdgeInsets.all(0.sp),
+      itemCount: 10,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.h),
+          child: VideoNewsCard(
+            videoUrl: "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
+            videoNewsTitle: "बागेश्वर के हरबाड़ में भारी बारिश और भूस्खलन से तबाही, कई घर क्षतिग्रस्त",
+            dateString: "19-05-2025",
+            onPressSaveBtn: () {},
+            onPressShareBtn: () {},
+          ),
+        );
+      },
+    ));
   }
 }

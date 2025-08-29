@@ -61,6 +61,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    print("turn off splash:::");
     FlutterNativeSplash.remove();
   }
 

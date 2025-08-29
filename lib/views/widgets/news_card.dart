@@ -1,11 +1,10 @@
+import 'package:Sankalit/core/app_text_style.dart';
+import 'package:Sankalit/core/theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:news_app/core/app_text_style.dart';
-import 'package:news_app/core/theme.dart';
-
 import '../../models/news_model.dart';
 import '../../viewmodels/bookmark_viewmodel.dart';
 import '../screens/news_detail_screen.dart';
@@ -21,10 +20,8 @@ class NewsCard extends ConsumerWidget {
   });
   String limitWords(String text, int wordLimit) {
     // Remove HTML tags
-    final RegExp exp =
-        RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
-    String plainText =
-        text.replaceAll(exp, '').replaceAll(RegExp(r'\s+'), ' ').trim();
+    final RegExp exp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
+    String plainText = text.replaceAll(exp, '').replaceAll(RegExp(r'\s+'), ' ').trim();
 
     // Limit words
     final words = plainText.split(' ');
@@ -73,8 +70,7 @@ class NewsCard extends ConsumerWidget {
                           child: Icon(
                             Icons.image_not_supported,
                             size: 30.sp,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                       )
@@ -117,8 +113,7 @@ class NewsCard extends ConsumerWidget {
                             SizedBox(height: 4.h),
                             Text(
                               limitWords(news.description!, 30),
-                              style: AppTextStyles.smallHindi.copyWith(
-                            ),
+                              style: AppTextStyles.smallHindi.copyWith(),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -153,8 +148,7 @@ class NewsCard extends ConsumerWidget {
 
                               SizedBox(width: 10.w),
                               Text(
-                                DateFormat('dd-MMM-yyyy')
-                                    .format(news.publishedAt),
+                                DateFormat('dd-MMM-yyyy').format(news.publishedAt),
                                 style: AppTextStyles.smallHindi.copyWith(
                                   color: AppTheme.lightTextPrimary,
                                 ),
@@ -171,9 +165,7 @@ class NewsCard extends ConsumerWidget {
                             child: IconButton(
                               padding: EdgeInsets.zero,
                               icon: Image.asset(
-                                isBookmarked
-                                    ? 'assets/icons/bookmarkActive.png'
-                                    : 'assets/icons/bookmark.png',
+                                isBookmarked ? 'assets/icons/bookmarkActive.png' : 'assets/icons/bookmark.png',
                                 width: 22.w,
                                 height: 22.h,
                                 fit: BoxFit.contain,
@@ -249,8 +241,7 @@ class VerticalNewsCard extends ConsumerWidget {
                           child: Icon(
                             Icons.image_not_supported,
                             size: 30.sp,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                       )
@@ -276,9 +267,9 @@ class VerticalNewsCard extends ConsumerWidget {
                   children: [
                     Text(
                       DateFormat('dd-MMM-yyyy').format(news.publishedAt),
-                       style: AppTextStyles.smallHindi.copyWith(
-                                  color: AppTheme.lightTextPrimary,
-                                ),
+                      style: AppTextStyles.smallHindi.copyWith(
+                        color: AppTheme.lightTextPrimary,
+                      ),
                     ),
                     if (showBookmarkButton)
                       SizedBox(
@@ -287,9 +278,7 @@ class VerticalNewsCard extends ConsumerWidget {
                         child: IconButton(
                           padding: EdgeInsets.zero,
                           icon: Image.asset(
-                            isBookmarked
-                                ? 'assets/icons/bookmarkActive.png'
-                                : 'assets/icons/bookmark.png',
+                            isBookmarked ? 'assets/icons/bookmarkActive.png' : 'assets/icons/bookmark.png',
                             width: 22.w,
                             height: 22.h,
                             fit: BoxFit.contain,
@@ -306,10 +295,10 @@ class VerticalNewsCard extends ConsumerWidget {
                 /// ✅ Title
                 Text(
                   news.title,
-                   style: AppTextStyles.heading3Hindi.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.lightTextPrimary,
-                            ),
+                  style: AppTextStyles.heading3Hindi.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.lightTextPrimary,
+                  ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -319,8 +308,7 @@ class VerticalNewsCard extends ConsumerWidget {
                   SizedBox(height: 5.h),
                   Text(
                     removeHtmlTags(news.description!),
-                      style: AppTextStyles.smallHindi.copyWith(
-                            ),
+                    style: AppTextStyles.smallHindi.copyWith(),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
