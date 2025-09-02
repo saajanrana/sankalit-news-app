@@ -1,6 +1,7 @@
 import 'package:Sankalit/core/app_text_style.dart';
 import 'package:Sankalit/core/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HorizontalCategoryTabs extends StatefulWidget {
   final List<String> categories;
@@ -29,9 +30,13 @@ class _HorizontalCategoryTabsState extends State<HorizontalCategoryTabs> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    if (widget.categories.isEmpty) {
+      return _buildShimmerTabs();
+    }
+
+    // ✅ Otherwise, show actual category tabs
+    return SizedBox(
       height: 40,
-      // margin: const EdgeInsets.symmetric(vertical: 10),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: widget.categories.length,
@@ -58,6 +63,32 @@ class _HorizontalCategoryTabsState extends State<HorizontalCategoryTabs> {
                     fontWeight: FontWeight.bold,
                     color: AppTheme.darkTextPrimary,
                   ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+  Widget _buildShimmerTabs() {
+    return Container(
+      height: 40,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 6, // number of shimmer placeholders
+        itemBuilder: (context, index) {
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: Container(
+                width: 80,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(6),
                 ),
               ),
             ),

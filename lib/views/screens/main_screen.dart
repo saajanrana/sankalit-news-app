@@ -62,7 +62,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     print("turn off splash:::");
-    FlutterNativeSplash.remove();
+    // FlutterNativeSplash.remove();
   }
 
   Widget _buildCustomNavBar() {

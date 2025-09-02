@@ -3,7 +3,6 @@ import 'package:Sankalit/core/constants.dart';
 import 'package:Sankalit/core/theme.dart';
 import 'package:Sankalit/viewmodels/news_viewmodel.dart';
 import 'package:Sankalit/views/widgets/common_header.dart';
-import 'package:Sankalit/views/widgets/news_card.dart';
 import 'package:Sankalit/views/widgets/saved_screen_widgets/saved_news_toggle_btn.dart';
 import 'package:Sankalit/views/widgets/shimmer_loading.dart';
 import 'package:Sankalit/views/widgets/video_screen_widgets/video_news_card.dart';
@@ -107,7 +106,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
         itemBuilder: (context, index) {
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 8.h),
-            child: NewsCard(news: newsState.news[index]),
+            // child: NewsCard(news: newsState.news[index]),
           );
         },
       );

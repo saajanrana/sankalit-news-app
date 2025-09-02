@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:Sankalit/core/theme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:Sankalit/core/theme.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 final apiUrl = dotenv.env['API_URL'];
 final accessToken = dotenv.env['API_KEY'];
@@ -15,6 +15,8 @@ final accessToken = dotenv.env['API_KEY'];
 class ApiServices {
   static dynamic post({required String endpoint, Map<String, dynamic> queryParameters = const {}}) async {
     try {
+      print("API POST Request: $apiUrl$endpoint" + "accessToken$accessToken");
+
       bool internetConnectionStatus = await InternetConnection().hasInternetAccess;
       if (!internetConnectionStatus) {
         return {"noInternet": true};

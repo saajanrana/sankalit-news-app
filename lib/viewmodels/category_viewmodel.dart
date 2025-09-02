@@ -1,37 +1,23 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/category_model.dart';
 
-// Category state
 class CategoryState {
-  final List<CategoryModel> categories;
-  final String selectedCategory;
+  final Map<String, dynamic> categories;
+  const CategoryState({this.categories = const {}});
 
-  CategoryState({
-    this.categories = const [],
-    this.selectedCategory = 'general',
-  });
-
-  CategoryState copyWith({
-    List<CategoryModel>? categories,
-    String? selectedCategory,
-  }) {
-    return CategoryState(
-      categories: categories ?? this.categories,
-      selectedCategory: selectedCategory ?? this.selectedCategory,
-    );
+  CategoryState copyWith({Map<String, dynamic>? categories}) {
+    return CategoryState(categories: categories ?? this.categories);
   }
 }
 
-// Category ViewModel
 class CategoryNotifier extends StateNotifier<CategoryState> {
-  CategoryNotifier() : super(CategoryState(categories: CategoryModel.getCategories()));
+  CategoryNotifier() : super(const CategoryState());
 
-  void selectCategory(String categoryId) {
-    state = state.copyWith(selectedCategory: categoryId);
+  void setCategories(Map<String, dynamic> categories) {
+    state = state.copyWith(categories: categories);
   }
 }
 
-// Provider
-final categoryProvider = StateNotifierProvider<CategoryNotifier, CategoryState>((ref) {
+final categoryProvider =
+    StateNotifierProvider<CategoryNotifier, CategoryState>((ref) {
   return CategoryNotifier();
 });

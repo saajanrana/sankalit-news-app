@@ -1,6 +1,7 @@
+import 'package:Sankalit/views/screens/news_by_category.dart';
+import 'package:Sankalit/views/widgets/category_screen_widgets/category_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:Sankalit/views/widgets/category_screen_widgets/category_card.dart';
 
 class ExpandableCategoryCard extends StatefulWidget {
   final String title;
@@ -32,6 +33,15 @@ class _ExpandableCategoryCardState extends State<ExpandableCategoryCard> {
             } else {
               // Navigate directly if only one subcategory
               final item = widget.subCategories.first;
+                Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NewsCategoryScreen(
+                              categorizedNews: item['name'],
+                              newsItemId: item['id'],
+                            ),
+                          ),
+                        );
               print("Tapped on ${item['name']} (id: ${item['id']})");
             }
           },
@@ -47,7 +57,15 @@ class _ExpandableCategoryCardState extends State<ExpandableCategoryCard> {
                     tileTitle: item['name'],
                     isSelected: _isExpanded,
                     onTap: () {
-                      print("Tapped on ${item['name']} (id: ${item['id']})");
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NewsCategoryScreen(
+                              categorizedNews: item['name'],
+                              newsItemId: item['id'],
+                            ),
+                          ),
+                        );
                     },
                   ),
                 );

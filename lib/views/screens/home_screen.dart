@@ -1,20 +1,22 @@
-import 'package:Sankalit/viewmodels/news_viewmodel.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:Sankalit/core/app_text_style.dart';
 import 'package:Sankalit/core/theme.dart';
+import 'package:Sankalit/services/api_services.dart';
+import 'package:Sankalit/viewmodels/category_viewmodel.dart';
+import 'package:Sankalit/views/screens/news_by_category.dart';
+import 'package:Sankalit/views/screens/news_detail_screen.dart';
 import 'package:Sankalit/views/widgets/common_header.dart';
 import 'package:Sankalit/views/widgets/home_screen_widgets/home_add_section.dart';
 import 'package:Sankalit/views/widgets/home_screen_widgets/home_category_scroller.dart';
 import 'package:Sankalit/views/widgets/home_screen_widgets/top_home_carousel.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import '../../core/constants.dart';
 import '../widgets/custom_drawer.dart';
 import '../widgets/news_card.dart';
-import '../widgets/shimmer_loading.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -25,33 +27,250 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   late ScrollController _scrollController;
+  bool showReadmoreButton = false;
   int _currentIndex = 0;
-  final List<String> homeCategories = [
-    'होम',
-    'उत्तराखण्ड',
-    'उत्तर प्रदेश',
-    'देश',
-    'पर्यटन',
-  ];
-  final List<String> imageUrls = [
-    'https://sankalit.com/images/augtop1.jpeg',
-    'https://sankalit.com/images/augtop2.jpeg',
-  ];
+  List<Map<String, String>> homeCategories = [];
+  List<Map<String, dynamic>> breakingNews = [];
+  List<Map<String, dynamic>> trendingNews = [];
+  Map<String, List<Map<String, dynamic>>> categorizedNews = {};
+  List<Map<String, dynamic>> categorizedNewsList = [];
+   String selectedCatId = '';
+  bool isLoading = true;
+
+  final categoryName = "उत्तराखण्ड";
+
+  String removeHtmlTags(String htmlText) {
+    final regex = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: true);
+    return htmlText.replaceAll(regex, '').trim();
+  }
+
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
-
-    // Load initial news
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // ref.read(newsProvider.notifier).loadNews(refresh: true);
-    });
+    _initializeData();
   }
 
+  void _initializeData() async {
+    setState(() => isLoading = true);
+
+    await Future.wait([
+      fetchCategories(),
+      fetchBreakingAndTrendingNews(),
+      fetchHomeScreenData(),
+    ]);
+
+    setState(() => isLoading = false);
+  }
+
+  Future<void> fetchCategories() async {
+    try {
+      final response = await ApiServices.get(endpoint: "category");
+      print("Categories Response: $response");
+
+      if (response != null && response['success'] == true) {
+        final data = response['data'];
+
+        if (data != null && data is Map<String, dynamic> && data.isNotEmpty) {
+          homeCategories.clear();
+          homeCategories.add({'id': '01', 'name': 'होम'});
+
+          final Map<String, List<Map<String, dynamic>>> formattedData = {};
+
+          data.forEach((key, value) {
+            if (value is List && value.isNotEmpty) {
+              final List<Map<String, dynamic>> subCategories =
+                  value.map((item) => Map<String, dynamic>.from(item)).toList();
+
+              formattedData[key] = subCategories;
+
+              // ✅ Add each subcategory (id + name)
+              for (var item in subCategories) {
+                if (item.containsKey('id') && item.containsKey('name')) {
+                  homeCategories.add({
+                    'id': item['id'].toString(),
+                    'name': item['name'].toString()
+                  });
+                }
+              }
+            }
+          });
+
+          // ✅ Update provider
+          ref.read(categoryProvider.notifier).setCategories(formattedData);
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching categories: $e");
+      homeCategories = [];
+    }
+  }
+
+  Future<void> fetchBreakingAndTrendingNews() async {
+    try {
+      final response =
+          await ApiServices.get(endpoint: "breaking-trending-news");
+      print("Breaking & Trending News Response: $response");
+
+      if (response != null && response['success'] == true) {
+        final data = response['data'];
+
+        if (data != null && data is Map<String, dynamic> && data.isNotEmpty) {
+          final List<dynamic> breakingNewsList = data['breaking_news'] ?? [];
+          final List<Map<String, dynamic>> breaking = breakingNewsList
+              .map((item) => Map<String, dynamic>.from(item))
+              .toList();
+
+          final List<dynamic> trendingNewsList = data['trending_news'] ?? [];
+          final List<Map<String, dynamic>> trending = trendingNewsList
+              .map((item) => Map<String, dynamic>.from(item))
+              .toList();
+
+          breakingNews = breaking;
+          trendingNews = trending;
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching breaking and trending news: $e");
+      breakingNews = [];
+      trendingNews = [];
+    }
+  }
+
+  Future<void> fetchHomeScreenData() async {
+    setState(() {
+      isLoading = true;
+      showReadmoreButton = false;
+      categorizedNews.clear();
+      categorizedNewsList.clear(); // ✅ Clear old data before adding new
+      categorizedNews = {};
+      categorizedNewsList = [];
+    });
+
+    try {
+      final response = await ApiServices.get(endpoint: "home");
+      if (response != null && response['success'] == true) {
+        final data = response['data'];
+
+        if (data != null && data is Map<String, dynamic> && data.isNotEmpty) {
+          Map<String, List<Map<String, dynamic>>> tempMap = {};
+          List<Map<String, dynamic>> categoryObjectList = [];
+
+          data.forEach((category, newsList) {
+            if (newsList is List) {
+              List<Map<String, dynamic>> categoryNewsList = []; // ✅ Local list
+
+              for (var news in newsList) {
+                final newsItem = {
+                  'category': category,
+                  'id': news['id'],
+                  'title': news['title'],
+                  'description': news['description'],
+                  'post_image': news['post_image'],
+                  'created_on': news['created_on'],
+                };
+
+                categoryNewsList.add(newsItem);
+              }
+
+              tempMap[category] = categoryNewsList;
+
+              categoryObjectList.add({
+                "category": category,
+                "news": categoryNewsList,
+              });
+            }
+          });
+
+          setState(() {
+            categorizedNews = tempMap;
+            categorizedNewsList = categoryObjectList;
+            isLoading = false;
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching home screen data: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _fetchNewsByCategory(String newsCategory, int newsItemId) async {
+    try {
+      print("Fetching news for category: $newsCategory, itemId: $newsItemId");
+      setState(() {
+        isLoading = true;
+        categorizedNews.clear();
+        categorizedNewsList.clear();
+        categorizedNews = {};
+      });
+
+      final response = await ApiServices.get(
+        endpoint: "news-by-category?cid=$newsItemId",
+      );
+      print("response: $response");
+
+      if (response != null && response['success'] == true) {
+        List<dynamic> newNews = response['data']['news'] ?? [];
+
+        if (newNews.isNotEmpty) {
+          Map<String, List<Map<String, dynamic>>> tempMap = {};
+          List<Map<String, dynamic>> categoryObjectList = [];
+
+          List<Map<String, dynamic>> categoryNewsList = []; // ✅ Local list
+
+          for (var news in newNews) {
+            if (news is Map<String, dynamic>) {
+              final newsItem = {
+                'category': newsCategory,
+                'id': news['id'],
+                'title': news['title'],
+                'description': news['description'],
+                'post_image': news['post_image'],
+                'created_on': news['created_on'] ?? '',
+              };
+
+              categoryNewsList.add(newsItem);
+            }
+          }
+
+          tempMap[newsCategory] = categoryNewsList;
+
+          categoryObjectList.add({
+            "category": newsCategory,
+            "news": categoryNewsList,
+          });
+
+          setState(() {
+            categorizedNews = tempMap;
+            categorizedNewsList = categoryObjectList;
+            showReadmoreButton = true;
+            isLoading = false;
+          });
+
+          print('Categorized News: $categorizedNews');
+        }
+      }
+    } catch (e) {
+      print("Error fetching news by category: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  final List<String> imageUrls = [
+    'https://sankalit.com/images/augtop1.jpeg',
+    'https://sankalit.com/images/augtop2.jpeg',
+  ];
+
   void _onScroll() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-      // ref.read(newsProvider.notifier).loadMore();
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      // Load more data if needed
     }
   }
 
@@ -61,42 +280,49 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.dispose();
   }
 
+  Future<void> _onRefresh() async {
+    _initializeData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final newsState = ref.watch(newsProvider);
-
+    print("latest news : $categorizedNewsList");
     return Scaffold(
       backgroundColor: Colors.white,
       endDrawer: const CustomDrawer(),
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
+            padding: EdgeInsets.only(
+                left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
             child: const CommonHeader(),
           ),
           Expanded(
             child: RefreshIndicator(
-              onRefresh: () async {},
+              onRefresh: _onRefresh,
               child: CustomScrollView(
                 controller: _scrollController,
                 slivers: [
-                  const SliverToBoxAdapter(
+                  // Breaking News Ticker
+                  SliverToBoxAdapter(
                     child: BreakingNewsTicker(
                       breakingText: 'Breaking',
-                      newsText: 'मुख्यमंत्री श्री पुष्कर सिंह धामी ने प्रधानमंत्री श्री नरेंद्र मोदी एवं | मुख्यमंत्री और अधिकारियों ने गैरसैंण में ‘एक पेड़ माँ के नाम’ अभियान के तहत किया पौधा रोपण.',
+                      newsText: breakingNews.isNotEmpty
+                          ? breakingNews
+                              .map((item) => item['title'])
+                              .join(' | ')
+                          : 'Loading breaking news...',
                     ),
                   ),
 
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
 
-                  // ✅ add Image section
-                  AddsDynamicImageList(
-                    imageUrls: imageUrls,
-                  ),
+                  // Ads Image section
+                  AddsDynamicImageList(imageUrls: imageUrls),
 
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
 
-                  // ✅ Trending News header + Carousel
+                  // Trending News Section
                   SliverToBoxAdapter(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,314 +338,47 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ),
                         ),
                         SizedBox(height: 10.h),
-                        CarouselSlider(
-                          items: [
-                            _buildCarouselItem(
-                              imageUrl: 'https://sankalit.com/post_images/featured_1756050433.jpg',
-                              title: 'भूस्खलन से बद्रीनाथ राजमार्ग बंद, यात्री ...',
-                            ),
-                            _buildCarouselItem(
-                              imageUrl: 'https://sankalit.com/post_images/featured_1755962919.jpg',
-                              title: 'ताज़ा खबरें - जानिए क्या हुआ',
-                            ),
-                            _buildCarouselItem(
-                              imageUrl: 'https://sankalit.com/post_images/featured_1755962319.jpg',
-                              title: 'खेल जगत से जुड़ी बड़ी खबरें',
-                            ),
-                          ],
-                          options: CarouselOptions(
-                            height: 200.h,
-                            autoPlay: true,
-                            enlargeCenterPage: true,
-                            viewportFraction: 0.9,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                _currentIndex = index;
-                              });
-                            },
-                          ),
-                        ),
+                        _buildTrendingNewsCarousel(),
                         SizedBox(height: 10.h),
-                        Center(
-                          child: AnimatedSmoothIndicator(
-                            activeIndex: _currentIndex,
-                            count: 3,
-                            effect: const ExpandingDotsEffect(
-                              activeDotColor: Colors.red,
-                              dotColor: Colors.black26,
-                              dotHeight: 8,
-                              dotWidth: 8,
-                            ),
-                          ),
-                        ),
+                        _buildCarouselIndicator(),
                       ],
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child: SizedBox(height: 20.h),
-                  ),
 
+                  SliverToBoxAdapter(child: SizedBox(height: 20.h)),
+
+                  // Category Tabs
                   SliverToBoxAdapter(
                     child: HorizontalCategoryTabs(
-                      categories: homeCategories,
-                      onTabSelected: (index) {},
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: SizedBox(height: 20.h),
-                  ),
+                      categories:
+                          homeCategories.map((cat) => cat['name']!).toList(),
+                      onTabSelected: (index) {
+                        final selectedCategory = homeCategories[index];
+                        final categoryId = selectedCategory['id'];
+                        final categoryName = selectedCategory['name'];
+                        selectedCatId = selectedCategory['id']!;
 
-                  SliverToBoxAdapter(
-                    child: Container(
-                      height: 40.h,
-                      width: double.infinity,
-                      color: Colors.black,
-                      alignment: Alignment.centerLeft, // ✅ Centers vertically but left aligned
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      child: Text(
-                        'उत्तराखण्ड',
-                        style: AppTextStyles.heading2Hindi.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.darkTextPrimary,
-                        ),
-                      ),
+                        if (categoryId == '01') {
+                          print("Home selected");
+                          fetchHomeScreenData();
+                        } else {
+                          _fetchNewsByCategory(
+                              categoryName!, int.parse(categoryId!));
+                        }
+                      },
                     ),
-                  ),
-
-                  // ✅ News list section
-                  if (newsState.isLoading && newsState.news.isEmpty)
-                    const SliverToBoxAdapter(child: ShimmerLoading())
-                  else if (newsState.error != null && newsState.news.isEmpty)
-                    SliverToBoxAdapter(
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                          child: Column(
-                            children: [
-                              Text(
-                                AppStrings.error,
-                                style: Theme.of(context).textTheme.headlineSmall,
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                newsState.error!,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 16),
-                              ElevatedButton(
-                                onPressed: () => {},
-                                child: const Text(AppStrings.retry),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  else
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          if (index < newsState.news.length) {
-                            return Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                                  child: NewsCard(news: newsState.news[index]),
-                                ),
-                                // ✅ Horizontal line after each item except the last one
-                                if (index != newsState.news.length - 1)
-                                  Divider(
-                                    thickness: 1,
-                                    color: Colors.grey.withOpacity(0.3),
-                                    indent: 16.w,
-                                    endIndent: 16.w,
-                                  ),
-                              ],
-                            );
-                          } else if (newsState.isLoading) {
-                            return const Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Center(child: CircularProgressIndicator()),
-                            );
-                          }
-                          return null;
-                        },
-                        childCount: newsState.news.length + (newsState.isLoading ? 1 : 0),
-                      ),
-                    ),
-                  SliverToBoxAdapter(child: SizedBox(height: 20.h)),
-                  // ✅ add Image section
-                  AddsDynamicImageList(
-                    imageUrls: imageUrls,
                   ),
 
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
-                  SliverToBoxAdapter(
-                    child: Container(
-                      height: 40.h,
-                      width: double.infinity,
-                      color: Colors.black,
-                      alignment: Alignment.centerLeft, // ✅ Centers vertically but left aligned
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      child: Text(
-                        'नैनीताल',
-                       style: AppTextStyles.heading2Hindi.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.darkTextPrimary,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(child: SizedBox(height: 10.h)),
-                  // ✅ grid News list section
-                  if (newsState.isLoading && newsState.news.isEmpty)
-                    const SliverToBoxAdapter(child: ShimmerLoading())
-                  else if (newsState.error != null && newsState.news.isEmpty)
-                    SliverToBoxAdapter(
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(6.h),
-                          child: Column(
-                            children: [
-                              Text(
-                                AppStrings.error,
-                                style: Theme.of(context).textTheme.headlineSmall,
-                              ),
-                              SizedBox(height: 5.h),
-                              Text(
-                                newsState.error!,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 10.h),
-                              ElevatedButton(
-                                onPressed: () => {},
-                                child: const Text(AppStrings.retry),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  else
-                    SliverGrid(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.60,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          if (index < newsState.news.length) {
-                            return Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                  child: VerticalNewsCard(news: newsState.news[index]),
-                                ),
-                                // Add divider if this is the last item in the row
-                                if ((index + 1) % 1 == 0)
-                                  Padding(
-                                    padding: EdgeInsets.symmetric( vertical: 8.h),
-                                    child: Divider(
-                                      thickness: 1,
-                                      color: Colors.grey.withOpacity(0.3),
-                                    ),
-                                  ),
-                              ],
-                            );
-                          } else if (newsState.isLoading) {
-                            return const Center(child: CircularProgressIndicator());
-                          }
-                          return null;
-                        },
-                        childCount: newsState.news.length + (newsState.isLoading ? 1 : 0),
-                      ),
-                    ),
-                  // ✅ add Image section
-                  AddsDynamicImageList(
-                    imageUrls: imageUrls,
-                  ),
+
+                  // Ads Image section
+                  AddsDynamicImageList(imageUrls: imageUrls),
 
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
-                  SliverToBoxAdapter(
-                    child: Container(
-                      height: 40.h,
-                      width: double.infinity,
-                      color: Colors.black,
-                      alignment: Alignment.centerLeft, // ✅ Centers vertically but left aligned
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      child: Text(
-                        'चमोली',
-                        style: AppTextStyles.heading2Hindi.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.darkTextPrimary,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(child: SizedBox(height: 10.h)),
-                  if (newsState.isLoading && newsState.news.isEmpty)
-                    const SliverToBoxAdapter(child: ShimmerLoading())
-                  else if (newsState.error != null && newsState.news.isEmpty)
-                    SliverToBoxAdapter(
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            children: [
-                              Text(
-                                AppStrings.error,
-                                style: Theme.of(context).textTheme.headlineSmall,
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                newsState.error!,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 16),
-                              ElevatedButton(
-                                onPressed: () => {},
-                                child: const Text(AppStrings.retry),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  else
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          if (index < newsState.news.length) {
-                            return Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                                  child: NewsCard(news: newsState.news[index]),
-                                ),
-                                // ✅ Horizontal line after each item except the last one
-                                if (index != newsState.news.length - 1)
-                                  Divider(
-                                    thickness: 1,
-                                    color: Colors.grey.withOpacity(0.3),
-                                    indent: 16.w,
-                                    endIndent: 16.w,
-                                  ),
-                              ],
-                            );
-                          } else if (newsState.isLoading) {
-                            return const Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Center(child: CircularProgressIndicator()),
-                            );
-                          }
-                          return null;
-                        },
-                        childCount: newsState.news.length + (newsState.isLoading ? 1 : 0),
-                      ),
-                    ),
+
+                  ..._buildAllCategoriesNews(),
+
+                  SliverToBoxAdapter(child: SizedBox(height: 20.h)),
                 ],
               ),
             ),
@@ -429,100 +388,375 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildCarouselItem({required String imageUrl, required String title}) {
-    return Stack(
-      children: [
-        // Main image container
-        ClipRRect(
-          borderRadius: BorderRadius.circular(16.r),
+  Widget _buildTrendingNewsCarousel() {
+    if (trendingNews.isEmpty) {
+      return SizedBox(
+        height: 200.h,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: 3,
+          itemBuilder: (context, index) => Container(
+            width: 300.w,
+            margin: EdgeInsets.symmetric(horizontal: 8.w),
+            child:
+                _buildCarouselItem(imageUrl: '', title: '', newsItemId: null),
+          ),
+        ),
+      );
+    }
+
+    return CarouselSlider(
+      items: trendingNews.map((item) {
+        return _buildCarouselItem(
+          imageUrl: item['post_image'] ?? '',
+          title: item['title'] ?? '',
+          newsItemId: item['id'] ?? 0,
+        );
+      }).toList(),
+      options: CarouselOptions(
+        height: 200.h,
+        autoPlay: true,
+        enlargeCenterPage: true,
+        viewportFraction: 0.9,
+        onPageChanged: (index, reason) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _buildCarouselIndicator() {
+    return Center(
+      child: AnimatedSmoothIndicator(
+        activeIndex: _currentIndex,
+        count: trendingNews.isEmpty ? 3 : trendingNews.length,
+        effect: const ExpandingDotsEffect(
+          activeDotColor: Colors.red,
+          dotColor: Colors.black26,
+          dotHeight: 8,
+          dotWidth: 8,
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildAllCategoriesNews() {
+    List<Widget> slivers = [];
+    print("selectedId::::::$selectedCatId");
+
+    if (isLoading) {
+      // ✅ Show shimmer placeholders
+      slivers.add(
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // ✅ Image placeholder
+                      Container(
+                        height: 200.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                      ),
+                      SizedBox(height: 10.h),
+
+                      // ✅ Title placeholder
+                      Container(
+                        height: 20.h,
+                        width: 200.w,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                      ),
+                      SizedBox(height: 6.h),
+
+                      // ✅ Description placeholder line 1
+                      Container(
+                        height: 14.h,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                      ),
+                      SizedBox(height: 6.h),
+
+                      // ✅ Description placeholder line 2
+                      Container(
+                        height: 14.h,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+            childCount: 6, // show 6 shimmer items
+          ),
+        ),
+      );
+      return slivers;
+    }
+
+    // ✅ If not loading, show actual data
+    for (var categoryData in categorizedNewsList) {
+      // print("categoryData<<<<<<<<<<<<<<<<<<<<<<<<<<<: $categoryData");
+      final categoryId = categoryData['id'] ;
+      final categoryName = categoryData['category'] as String;
+      final newsList = categoryData['news'] as List<Map<String, dynamic>>;
+
+      // Category Header
+      slivers.add(
+        SliverToBoxAdapter(
           child: Container(
+            height: 40.h,
             width: double.infinity,
-            height: 200.h,
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Container(
-                  color: Colors.grey.shade200,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
-                    ),
-                  ),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: Colors.grey.shade300,
-                  child: const Center(
-                    child: Icon(
-                      Icons.error_outline,
-                      color: Colors.grey,
-                      size: 40,
-                    ),
-                  ),
-                );
-              },
+            color: Colors.black,
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: Text(
+              categoryName,
+              style: AppTextStyles.heading2Hindi.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppTheme.darkTextPrimary,
+              ),
             ),
           ),
         ),
+      );
 
-        // Black slip/band at bottom for text
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: ClipRRect(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(16.r),
-              bottomRight: Radius.circular(16.r),
-            ),
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.5),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(16.r),
-                  bottomRight: Radius.circular(16.r),
+      // News List for Category
+      slivers.add(
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final item = newsList[index];
+
+              return Column(
+                children: [
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                    child: NewsCard(
+                      title: item['title'] ?? '',
+                      description: removeHtmlTags(item['description'] ?? ''),
+                      imageUrl: item['post_image'] ?? '',
+                      category: item['category'],
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NewsDetailScreen(
+                              categorizedNews: item['category'],
+                              newsItemId: int.parse(selectedCatId),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  if (index != newsList.length - 1)
+                    Divider(
+                      thickness: 1,
+                      color: Colors.grey.withOpacity(0.3),
+                      indent: 16.w,
+                      endIndent: 16.w,
+                    ),
+                ],
+              );
+            },
+            childCount: newsList.length,
+          ),
+        ),
+      );
+
+      slivers.add(SliverToBoxAdapter(child: SizedBox(height: 10.h)));
+
+      if (showReadmoreButton) {
+        // final categoryId = categoryData['categoryId'] as int;
+        final categoryName = categoryData['category'] as String;
+        print("categoryId>>>>>>>>>>>: $categoryId, categoryName>>>>>>>>>>>>>>>: $categoryName");
+        slivers.add(SliverToBoxAdapter(
+          child: Center(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NewsCategoryScreen(
+                      categorizedNews: categoryName,
+                      newsItemId: int.parse(selectedCatId),
+                    ),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.errorColor,
+                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.w,
-                vertical: 12.h,
               ),
               child: Text(
-                title,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.bodyHindi.copyWith(
+                "READ MORE",
+                style: TextStyle(
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.darkTextPrimary,
+                  color: Colors.white,
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
-        ),
+        ));
+      }
+// ✅ Dynamic image list
+      slivers.add(SliverToBoxAdapter(child: SizedBox(height: 20.h)));
+      slivers.add(AddsDynamicImageList(imageUrls: imageUrls));
+      slivers.add(SliverToBoxAdapter(child: SizedBox(height: 20.h)));
+    }
 
-        // Optional: Add a subtle border
-        ClipRRect(
-          borderRadius: BorderRadius.circular(16.r),
+    return slivers;
+  }
+
+  Widget _buildCarouselItem(
+      {required String? imageUrl,
+      required String? title,
+      required newsItemId}) {
+    bool showShimmer = (imageUrl == null || imageUrl.isEmpty) ||
+        (title == null || title.isEmpty);
+
+    if (showShimmer) {
+      return Shimmer.fromColors(
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
           child: Container(
             width: double.infinity,
-            height: 200.h,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.r),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.1),
-                width: 1,
+            height: 200,
+            color: Colors.white,
+          ),
+        ),
+      );
+    }
+
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NewsDetailScreen(
+              newsItemId: newsItemId,
+              categorizedNews: 'उत्तराखण्ड',
+            ),
+          ),
+        );
+      },
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              width: double.infinity,
+              height: 200,
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    color: Colors.grey.shade200,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    ),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey.shade300,
+                    child: const Center(
+                      child: Icon(
+                        Icons.error_outline,
+                        color: Colors.grey,
+                        size: 40,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
-        ),
-      ],
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(16),
+                bottomRight: Radius.circular(16),
+              ),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(16),
+                    bottomRight: Radius.circular(16),
+                  ),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.bodyHindi.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.darkTextPrimary,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              width: double.infinity,
+              height: 200,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.1),
+                  width: 1,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -5,23 +5,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+
 import '../../models/news_model.dart';
 import '../../viewmodels/bookmark_viewmodel.dart';
-import '../screens/news_detail_screen.dart';
 
 class NewsCard extends ConsumerWidget {
-  final NewsModel news;
+
+  final String title;
+  final String? description;
+  final String? imageUrl;
+  final String? publishedAt;
   final bool showBookmarkButton;
+  final VoidCallback onTap;
+
 
   const NewsCard({
     super.key,
-    required this.news,
-    this.showBookmarkButton = true,
+    required this.title,
+    this.description,
+    this.imageUrl,
+    this.publishedAt,
+    this.showBookmarkButton = false,
+    required category,
+    required this.onTap,
   });
+
   String limitWords(String text, int wordLimit) {
-    // Remove HTML tags
-    final RegExp exp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
-    String plainText = text.replaceAll(exp, '').replaceAll(RegExp(r'\s+'), ' ').trim();
+    final RegExp exp =
+        RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
+    String plainText =
+        text.replaceAll(exp, '').replaceAll(RegExp(r'\s+'), ' ').trim();
 
     // Limit words
     final words = plainText.split(' ');
@@ -31,18 +44,10 @@ class NewsCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bookmarkNotifier = ref.read(bookmarkProvider.notifier);
-    final isBookmarked = bookmarkNotifier.isBookmarked(news.url);
+    bool isBookmarked = false;
 
     return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NewsDetailScreen(news: news),
-          ),
-        );
-      },
+     onTap: onTap,
       child: Container(
         height: 170.h,
         child: Row(
@@ -53,16 +58,16 @@ class NewsCard extends ConsumerWidget {
               height: 150.h,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12.r),
-                child: news.urlToImage != null
+                child: imageUrl != null
                     ? CachedNetworkImage(
-                        imageUrl: news.urlToImage!,
+                        imageUrl: imageUrl!,
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: double.infinity,
                         placeholder: (context, url) => Container(
                           color: Theme.of(context).colorScheme.surfaceVariant,
                           child: const Center(
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            child: CircularProgressIndicator(strokeWidth: 2,color: AppTheme.primaryColor,),
                           ),
                         ),
                         errorWidget: (context, url, error) => Container(
@@ -70,7 +75,8 @@ class NewsCard extends ConsumerWidget {
                           child: Icon(
                             Icons.image_not_supported,
                             size: 30.sp,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                       )
@@ -99,7 +105,7 @@ class NewsCard extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            limitWords(news.title, 18),
+                            limitWords(title, 18),
                             style: AppTextStyles.heading3Hindi.copyWith(
                               fontWeight: FontWeight.bold,
                               color: AppTheme.lightTextPrimary,
@@ -109,10 +115,10 @@ class NewsCard extends ConsumerWidget {
                           ),
 
                           // Description (if available)
-                          if (news.description != null) ...[
+                          if (description != null) ...[
                             SizedBox(height: 4.h),
                             Text(
-                              limitWords(news.description!, 30),
+                              limitWords(description!, 30),
                               style: AppTextStyles.smallHindi.copyWith(),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -131,24 +137,11 @@ class NewsCard extends ConsumerWidget {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // // Source
-                              // Text(
-                              //   "news.state",
-                              //   style: Theme.of(context)
-                              //       .textTheme
-                              //       .bodySmall
-                              //       ?.copyWith(
-                              //         color:
-                              //             Theme.of(context).colorScheme.primary,
-                              //         fontWeight: FontWeight.w500,
-                              //         fontSize: 14.sp,
-                              //       ),
-                              //   overflow: TextOverflow.ellipsis,
-                              // ),
-
-                              SizedBox(width: 10.w),
                               Text(
-                                DateFormat('dd-MMM-yyyy').format(news.publishedAt),
+                                DateFormat('dd-MMM-yyyy').format(
+                                    publishedAt != null
+                                        ? DateTime.parse(publishedAt!)
+                                        : DateTime.now()),
                                 style: AppTextStyles.smallHindi.copyWith(
                                   color: AppTheme.lightTextPrimary,
                                 ),
@@ -158,23 +151,26 @@ class NewsCard extends ConsumerWidget {
                         ),
 
                         // Right side - Bookmark button
-                        if (showBookmarkButton)
-                          Container(
-                            width: 32.w,
-                            height: 32.h,
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              icon: Image.asset(
-                                isBookmarked ? 'assets/icons/bookmarkActive.png' : 'assets/icons/bookmark.png',
-                                width: 22.w,
-                                height: 22.h,
-                                fit: BoxFit.contain,
-                              ),
-                              onPressed: () {
-                                bookmarkNotifier.toggleBookmark(news);
-                              },
+
+                        Container(
+                          width: 32.w,
+                          height: 32.h,
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            icon: Image.asset(
+                              isBookmarked
+                                  ? 'assets/icons/bookmarkActive.png'
+                                  : 'assets/icons/bookmark.png',
+                              width: 22.w,
+                              height: 22.h,
+                              fit: BoxFit.contain,
                             ),
+                            onPressed: () {},
+                            // onPressed: () {
+                            //   bookmarkNotifier.toggleBookmark(news);
+                            // },
                           ),
+                        ),
                       ],
                     ),
                   ],
@@ -208,14 +204,14 @@ class VerticalNewsCard extends ConsumerWidget {
     final isBookmarked = bookmarkNotifier.isBookmarked(news.url);
 
     return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NewsDetailScreen(news: news),
-          ),
-        );
-      },
+      // onTap: () {
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) => NewsDetailScreen(news: news),
+      //     ),
+      //   );
+      // },
       child: Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,7 +237,8 @@ class VerticalNewsCard extends ConsumerWidget {
                           child: Icon(
                             Icons.image_not_supported,
                             size: 30.sp,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                       )
@@ -278,7 +275,9 @@ class VerticalNewsCard extends ConsumerWidget {
                         child: IconButton(
                           padding: EdgeInsets.zero,
                           icon: Image.asset(
-                            isBookmarked ? 'assets/icons/bookmarkActive.png' : 'assets/icons/bookmark.png',
+                            isBookmarked
+                                ? 'assets/icons/bookmarkActive.png'
+                                : 'assets/icons/bookmark.png',
                             width: 22.w,
                             height: 22.h,
                             fit: BoxFit.contain,
