@@ -48,6 +48,8 @@ class NewsCard extends ConsumerWidget {
 
     final isBookmarked = bookmarks.contains(id);
 
+    print('bookMarkIds::::>>>>$bookmarks');
+
     return InkWell(
       onTap: onTap,
       child: Container(

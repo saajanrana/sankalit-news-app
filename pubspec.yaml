@@ -56,6 +56,7 @@ dependencies:
   fluttertoast: ^8.2.12
   youtube_player_flutter: ^9.1.2
   flutter_html_iframe: ^3.0.0
+  external_app_launcher: ^4.0.3
 
 
 dev_dependencies:
@@ -78,6 +79,8 @@ flutter:
     - assets/icons/youtubeIcon.png
     - assets/icons/facebookIcon.png
     - assets/icons/xIcon.png
+    - assets/icons/gmailIcon.png 
+    - assets/icons/whatsappIcon.png
     # other app icons
     - assets/icons/rightArrow.svg
     - assets/icons/rightArrow.png
@@ -90,6 +93,7 @@ flutter:
     - assets/icons/bookmark.png
     - assets/icons/bookmarkActive.png
     - assets/sankalitSplash.png
+
 
   fonts:
     - family: JosefinSans

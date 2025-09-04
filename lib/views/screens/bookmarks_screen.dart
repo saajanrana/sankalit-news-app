@@ -5,6 +5,8 @@ import 'package:Sankalit/core/theme.dart';
 import 'package:Sankalit/services/api_services.dart';
 import 'package:Sankalit/viewmodels/news_viewmodel.dart';
 import 'package:Sankalit/views/widgets/common_header.dart';
+import 'package:Sankalit/views/widgets/news_card.dart';
+import 'package:Sankalit/views/widgets/no_data_found_screen.dart';
 import 'package:Sankalit/views/widgets/saved_screen_widgets/saved_news_toggle_btn.dart';
 import 'package:Sankalit/views/widgets/shimmer_loading.dart';
 import 'package:Sankalit/views/widgets/video_screen_widgets/video_news_card.dart';
@@ -21,30 +23,38 @@ class BookmarksScreen extends ConsumerStatefulWidget {
 
 class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
   bool isTextNewsIsSelected = true;
+  List<dynamic> savedNewsList = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getSavedNews();
+      getSavedNews("Text News");
     });
   }
 
-  getSavedNews() async {
+  getSavedNews(newsType) async {
     try {
       final bookmarks = await ref.watch(newsBookmarkProvider);
-      print("BookMarks::::$bookmarks");
-      final response = await ApiServices.post(endpoint: '/saved-news', queryParameters: {"ids": bookmarks, "news_type": "Text News"});
-      print("response:::>>>$response");
+      final response = await ApiServices.post(endpoint: 'saved-news', queryParameters: {"ids": bookmarks, "news_type": newsType});
+      if (response['success']) {
+        setState(() {
+          savedNewsList = response['data'];
+          isLoading = false;
+        });
+      }
     } catch (e) {
       print("Error in getSaved News:::$e");
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final newsState = ref.watch(newsProvider);
-
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -70,12 +80,16 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
                 onNewsBtnPress: () {
                   setState(() {
                     isTextNewsIsSelected = true;
+                    isLoading = true;
                   });
+                  getSavedNews("Text News");
                 },
                 onVideoBtnPress: () {
                   setState(() {
                     isTextNewsIsSelected = false;
+                    isLoading = true;
                   });
+                  getSavedNews("Video News");
                 },
               ),
 
@@ -83,7 +97,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
 
               // Content Area (News or Videos)
               Expanded(
-                child: isTextNewsIsSelected ? _buildNewsList(newsState) : _buildVideoList(),
+                child: isTextNewsIsSelected ? _buildNewsList(savedNewsList, isLoading) : _buildVideoList(savedNewsList, isLoading),
               ),
             ],
           ),
@@ -93,66 +107,49 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
   }
 
   /// Build News List
-  Widget _buildNewsList(NewsState newsState) {
-    if (newsState.isLoading && newsState.news.isEmpty) {
+  Widget _buildNewsList(List<dynamic> savedNewsList, bool isLoading) {
+    if (isLoading) {
       return const ShimmerLoading();
-    } else if (newsState.error != null && newsState.news.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(AppStrings.error, style: Theme.of(context).textTheme.headlineSmall),
-              SizedBox(height: 8),
-              Text(newsState.error!, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => ref.read(newsProvider.notifier).refresh(),
-                child: const Text(AppStrings.retry),
-              ),
-            ],
-          ),
-        ),
-      );
+    } else if (savedNewsList.isEmpty) {
+      return NoDataFoundScreen();
     } else {
-      return ListView.separated(
-        itemCount: newsState.news.length,
-        separatorBuilder: (_, __) => Divider(
-          thickness: 1,
-          color: Colors.grey.withOpacity(0.3),
-          indent: 16.w,
-          endIndent: 16.w,
-        ),
+      return ListView.builder(
+        padding: EdgeInsets.all(0.sp),
+        itemCount: savedNewsList.length,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.h),
-            // child: NewsCard(news: newsState.news[index]),
-          );
+          final item = savedNewsList[index];
+          return NewsCard(imageUrl: item['post_image'], title: item['title'], description: item['description'], id: item['id'], category: item['category'], onTap: () {});
         },
       );
     }
   }
 
   /// Build Video List
-  Widget _buildVideoList() {
-    return Expanded(
-        child: ListView.builder(
-      padding: EdgeInsets.all(0.sp),
-      itemCount: 10,
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.h),
-          child: VideoNewsCard(
-            id: 1,
-            videoUrl: "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
-            videoNewsTitle: "बागेश्वर के हरबाड़ में भारी बारिश और भूस्खलन से तबाही, कई घर क्षतिग्रस्त",
-            dateString: "19-05-2025",
-            onPressSaveBtn: () {},
-            onPressShareBtn: () {},
-          ),
-        );
-      },
-    ));
+  Widget _buildVideoList(List<dynamic> savedNewsList, bool isLoading) {
+    if (isLoading) {
+      return const ShimmerLoading();
+    } else if (savedNewsList.isEmpty) {
+      return NoDataFoundScreen();
+    } else {
+      return Expanded(
+          child: ListView.builder(
+        padding: EdgeInsets.all(0.sp),
+        itemCount: savedNewsList.length,
+        itemBuilder: (context, index) {
+          final item = savedNewsList[index];
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.h),
+            child: VideoNewsCard(
+              id: item['id'],
+              videoUrl: item['video_link'],
+              videoNewsTitle: item['title'],
+              dateString: item['created_on'],
+              onPressSaveBtn: () {},
+              onPressShareBtn: () {},
+            ),
+          );
+        },
+      ));
+    }
   }
 }

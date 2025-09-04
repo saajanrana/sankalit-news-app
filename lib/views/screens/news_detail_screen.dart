@@ -10,8 +10,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:html/parser.dart' as html_parser;
 import 'package:intl/intl.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:external_app_launcher/external_app_launcher.dart';
 
 class NewsDetailScreen extends ConsumerStatefulWidget {
   final int newsItemId;
@@ -79,7 +80,7 @@ class _NewsDetailScreenState extends ConsumerState<NewsDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("suggestedData::::$newsDetails");
+    // print("suggestedData::::$newsDetails");
     final bookmarks = ref.watch(newsBookmarkProvider);
 
     final isBookmarked = bookmarks.contains(widget.newsItemId);
@@ -175,7 +176,7 @@ class _NewsDetailScreenState extends ConsumerState<NewsDetailScreen> {
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      _showShareModal(context);
+                                      _showShareModal(context, 'https://sankalit.com/8615/Chief_Minister_inaugurated_the_first_Saathi_Kendra_of_Uttarakhand');
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -371,7 +372,7 @@ class _NewsDetailScreenState extends ConsumerState<NewsDetailScreen> {
   }
 }
 
-void _showShareModal(BuildContext context) {
+void _showShareModal(BuildContext context, url) {
   showModalBottomSheet(
     context: context,
     shape: RoundedRectangleBorder(
@@ -384,35 +385,68 @@ void _showShareModal(BuildContext context) {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "Share this news",
+              "Share This News",
               style: AppTextStyles.heading2.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: 20.h),
-
             // Row of app icons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _shareIcon(Icons.facebook, "Facebook", () {
+                _shareIcon('assets/icons/facebookIcon.png', "Facebook", () async {
+                  final fbUrl = Uri.parse("https://www.facebook.com/sharer/sharer.php?u=$url");
+                  if (await canLaunchUrl(fbUrl)) {
+                    await launchUrl(fbUrl, mode: LaunchMode.externalApplication);
+                  }
+                }),
+                _shareIcon('assets/icons/xIcon.png', "X", () async {
+                  final twitterUrl = Uri.parse("https://twitter.com/intent/tweet?text=Check out this news&url=$url");
+                  if (await canLaunchUrl(twitterUrl)) {
+                    await launchUrl(twitterUrl, mode: LaunchMode.externalApplication);
+                  }
                   Navigator.pop(context);
                 }),
+                _shareIcon('assets/icons/whatsappIcon.png', "WhatsApp", () async {
+                  final whatsappUrl = Uri.parse("https://wa.me/?text=Check out this news! $url");
+                  if (await canLaunchUrl(whatsappUrl)) {
+                    await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+                  }
 
-                // _shareIcon(Icons, "X", () {
-                //   Navigator.pop(context);
-                // }),
+                  Navigator.pop(context);
+                }),
+                _shareIcon('assets/icons/gmailIcon.png', "Gmail", () async {
+                  final emailUri = Uri(
+                    scheme: 'mailto',
+                    queryParameters: {
+                      'subject': 'Check out this news!',
+                      'body': 'Check out this news:\n\n$url',
+                    },
+                  );
 
-                // _shareIcon(Icons.telegram, "Telegram", () {
-                //   Share.share();
-                //   Navigator.pop(context);
-                // }),
-                // _shareIcon(Icons.more_horiz, "More", () {
-                //   Share.share(
+                  try {
+                    // First, try to open Gmail directly (Android only)
+                    final isGmailOpened = await LaunchApp.openApp(
+                      androidPackageName: 'com.google.android.gm',
+                      iosUrlScheme: 'googlegmail://', // iOS scheme
+                      openStore: false,
+                    );
 
-                //   );
-                //   Navigator.pop(context);
-                // }),
+                    if (isGmailOpened == false) {
+                      // Fallback to mailto (default email client)
+                      if (await canLaunchUrl(emailUri)) {
+                        await launchUrl(emailUri, mode: LaunchMode.externalApplication);
+                      } else {
+                        debugPrint("No email client found on this device.");
+                      }
+                    }
+                  } catch (e) {
+                    debugPrint("Error launching Gmail: $e");
+                  }
+
+                  Navigator.pop(context);
+                }),
               ],
             ),
           ],
@@ -422,12 +456,16 @@ void _showShareModal(BuildContext context) {
   );
 }
 
-Widget _shareIcon(IconData icon, String label, VoidCallback onTap) {
+Widget _shareIcon(String iconPath, String label, VoidCallback onTap) {
   return Column(
     mainAxisSize: MainAxisSize.min,
     children: [
       IconButton(
-        icon: Icon(icon, size: 30.sp, color: AppTheme.darkBackgroundColor),
+        icon: Image.asset(
+          iconPath,
+          height: 30.h,
+          width: 30.w,
+        ),
         onPressed: onTap,
       ),
       Text(
