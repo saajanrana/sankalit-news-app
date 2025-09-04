@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:html/parser.dart' as html_parser;
 import 'package:intl/intl.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 
 class NewsDetailScreen extends ConsumerStatefulWidget {
@@ -399,11 +398,12 @@ void _showShareModal(BuildContext context) {
                   Navigator.pop(context);
                 }),
 
-                // _shareIcon(Icons, "X", () {
+                // _shareIcon(Icons as IconData, "X", () {
                 //   Navigator.pop(context);
                 // }),
 
                 // _shareIcon(Icons.telegram, "Telegram", () {
+                //   // ignore: deprecated_member_use
                 //   Share.share();
                 //   Navigator.pop(context);
                 // }),

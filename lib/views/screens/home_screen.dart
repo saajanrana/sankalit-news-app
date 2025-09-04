@@ -290,6 +290,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Expanded(
             child: RefreshIndicator(
               onRefresh: _onRefresh,
+               color: AppTheme.primaryColor,
               child: CustomScrollView(
                 controller: _scrollController,
                 slivers: [
@@ -381,7 +382,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           itemBuilder: (context, index) => Container(
             width: 300.w,
             margin: EdgeInsets.symmetric(horizontal: 8.w),
-            child: _buildCarouselItem(imageUrl: '', title: '', newsItemId: null),
+            child: _buildCarouselItem(imageUrl: '', title: '', newsItemId:'', categorizedNews: ''),
           ),
         ),
       );
@@ -393,6 +394,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           imageUrl: item['post_image'] ?? '',
           title: item['title'] ?? '',
           newsItemId: item['id'] ?? 0,
+          categorizedNews: item['category_name'] ?? '' ,
         );
       }).toList(),
       options: CarouselOptions(
@@ -615,9 +617,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return slivers;
   }
 
-  Widget _buildCarouselItem({required String? imageUrl, required String? title, required newsItemId}) {
+  Widget _buildCarouselItem({required String? imageUrl, required String? title, required newsItemId, required categorizedNews}) {
     bool showShimmer = (imageUrl == null || imageUrl.isEmpty) || (title == null || title.isEmpty);
-
     if (showShimmer) {
       return Shimmer.fromColors(
         baseColor: Colors.grey.shade300,
@@ -640,7 +641,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           MaterialPageRoute(
             builder: (context) => NewsDetailScreen(
               newsItemId: newsItemId,
-              categorizedNews: 'उत्तराखण्ड',
+              categorizedNews: categorizedNews,
             ),
           ),
         );
