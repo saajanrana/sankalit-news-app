@@ -1,5 +1,6 @@
 import 'package:Sankalit/core/app_text_style.dart';
 import 'package:Sankalit/core/theme.dart';
+import 'package:Sankalit/services/api_services.dart';
 import 'package:Sankalit/views/widgets/common_header.dart';
 import 'package:Sankalit/views/widgets/contact_us_card.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,28 @@ class ContactUsScreen extends StatefulWidget {
 }
 
 class _ContactUsScreenState extends State<ContactUsScreen> {
+  Map<String, dynamic> contactUsDetails = {};
+  Map<String, dynamic> socialLinks = {};
+  loadData() async {
+    try {
+      final response = await ApiServices.get(endpoint: 'contact-us');
+      if (response['success']) {
+        setState(() {
+          contactUsDetails = response['data'];
+          socialLinks = response['data']['socialLinks'];
+        });
+      }
+    } catch (e) {
+      print("something went wrong in loadData in contact us Screen::$e");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +58,12 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                 style: AppTextStyles.heading2,
               ),
               SizedBox(height: 10.h),
-              const ContactUsCard(),
+              ContactUsCard(
+                editor: contactUsDetails['editorName'],
+                email: contactUsDetails['email'],
+                phone: contactUsDetails['phone'],
+                address: contactUsDetails['address'],
+              ),
               SizedBox(height: 10.h),
               const Text(
                 "STAY CONNECTED",
@@ -47,13 +75,15 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   InkWell(
-                    onTap: () async {
-                      final Uri url = Uri.parse("https://www.facebook.com/sankalitnews");
+                    onTap: socialLinks.isEmpty || socialLinks['facebook'] == null
+                        ? null
+                        : () async {
+                            final Uri url = Uri.parse(socialLinks['facebook']);
 
-                      if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-                        throw Exception("Could not launch $url");
-                      }
-                    },
+                            if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                              throw Exception("Could not launch $url");
+                            }
+                          },
                     child: Image.asset(
                       "assets/icons/facebookIcon.png",
                       width: 40.w,
@@ -62,6 +92,15 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                   ),
                   SizedBox(width: 2.w),
                   InkWell(
+                    onTap: socialLinks.isEmpty || socialLinks['twitter'] == null
+                        ? null
+                        : () async {
+                            final Uri url = Uri.parse(socialLinks['twitter']);
+
+                            if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                              throw Exception("Could not launch $url");
+                            }
+                          },
                     child: Image.asset(
                       "assets/icons/xIcon.png",
                       width: 40.w,
@@ -70,13 +109,15 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                   ),
                   SizedBox(width: 2.w),
                   InkWell(
-                    onTap: () async {
-                      final Uri url = Uri.parse("https://www.youtube.com/channel/UCmw22p0FRshQVHhSbzsr9Iw");
+                    onTap: socialLinks.isEmpty || socialLinks['youtube'] == null
+                        ? null
+                        : () async {
+                            final Uri url = Uri.parse(socialLinks['youtube']);
 
-                      if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-                        throw Exception("Could not launch $url");
-                      }
-                    },
+                            if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                              throw Exception("Could not launch $url");
+                            }
+                          },
                     child: Image.asset(
                       "assets/icons/youtubeIcon.png",
                       width: 40.w,

@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:Sankalit/core/app_text_style.dart';
 import 'package:Sankalit/core/theme.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ContactUsCard extends StatelessWidget {
-  const ContactUsCard({super.key});
+  final String? editor;
+  final String? email;
+  final int? phone;
+  final String? address;
+  const ContactUsCard({super.key, this.editor, this.email, this.phone, this.address});
 
   @override
   Widget build(BuildContext context) {
@@ -20,21 +25,21 @@ class ContactUsCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            LabelValueText(label: "Editor: ", value: "Krishna pant"),
+            LabelValueText(label: "Editor: ", value: editor),
             SizedBox(height: 10.h),
             LabelValueText(
               label: "Email: ",
-              value: "sankalit18@gmail.com",
+              value: email,
               labelType: "email",
             ),
             SizedBox(height: 10.h),
             LabelValueText(
               label: "Phone: ",
-              value: "+91 9720711889",
+              value: phone.toString(),
               labelType: "phone",
             ),
             SizedBox(height: 10.h),
-            LabelValueText(label: "Address: ", value: "35, Panditwari, Premnagar, Dehradun, Uttarakhand - 248007"),
+            LabelValueText(label: "Address: ", value: address),
           ],
         ),
       ),
@@ -45,10 +50,10 @@ class ContactUsCard extends StatelessWidget {
 // --------- Label and Values of contact us card widget ----- //
 class LabelValueText extends StatelessWidget {
   final String label;
-  final String value;
+  final String? value;
   final String labelType;
 
-  const LabelValueText({super.key, required this.label, required this.value, this.labelType = "text"});
+  const LabelValueText({super.key, required this.label, this.value, this.labelType = "text"});
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +64,27 @@ class LabelValueText extends StatelessWidget {
             text: "$label ",
             style: AppTextStyles.bodyBold,
           ),
-          TextSpan(
-            text: value,
-            style: AppTextStyles.body.copyWith(
-                color: labelType == "text" ? null : AppTheme.primaryColor, decoration: labelType == "text" ? TextDecoration.none : TextDecoration.underline, decorationColor: AppTheme.primaryColor),
-          ),
+          value == null || value == "null"
+              ? WidgetSpan(
+                  child: Shimmer.fromColors(
+                  baseColor: AppTheme.darkTextSecondary,
+                  highlightColor: AppTheme.lightBackgroundColor,
+                  child: Container(
+                    height: 10.h,
+                    width: 200.w,
+                    decoration: BoxDecoration(
+                      color: AppTheme.darkTextSecondary,
+                      borderRadius: BorderRadius.circular(2.r),
+                    ),
+                  ),
+                ))
+              : TextSpan(
+                  text: value,
+                  style: AppTextStyles.body.copyWith(
+                      color: labelType == "text" ? null : AppTheme.primaryColor,
+                      decoration: labelType == "text" ? TextDecoration.none : TextDecoration.underline,
+                      decorationColor: AppTheme.primaryColor),
+                ),
         ],
       ),
     );

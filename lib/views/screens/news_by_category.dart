@@ -45,10 +45,7 @@ class _NewsCategoryScreenState extends ConsumerState<NewsCategoryScreen> {
 
     // ✅ Add scroll listener for pagination
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent - 200 &&
-          !isLoadingMore &&
-          hasMore) {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 && !isLoadingMore && hasMore) {
         _loadMoreNews();
       }
     });
@@ -57,8 +54,7 @@ class _NewsCategoryScreenState extends ConsumerState<NewsCategoryScreen> {
   Future<void> _fetchNewsByCategory() async {
     try {
       final response = await ApiServices.get(
-        endpoint:
-            "news-by-category?cid=${widget.newsItemId}&page=$page&per_page=$perPage",
+        endpoint: "news-by-category?cid=${widget.newsItemId}&page=$page&per_page=$perPage",
       );
       print("response: $response");
 
@@ -68,8 +64,7 @@ class _NewsCategoryScreenState extends ConsumerState<NewsCategoryScreen> {
         setState(() {
           newsList.addAll(newNews);
           isLoading = false;
-          hasMore =
-              newNews.length == perPage; // If less than perPage → no more data
+          hasMore = newNews.length == perPage; // If less than perPage → no more data
         });
       }
     } catch (e) {
@@ -100,9 +95,10 @@ class _NewsCategoryScreenState extends ConsumerState<NewsCategoryScreen> {
               children: [
                 // ✅ Header
                 Padding(
-                  padding: EdgeInsets.only(
-                      left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
-                  child: const CommonHeader(),
+                  padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
+                  child: const CommonHeader(
+                    showBackBtn: true,
+                  ),
                 ),
                 const SizedBox(height: 20),
 
@@ -151,8 +147,8 @@ class _NewsCategoryScreenState extends ConsumerState<NewsCategoryScreen> {
                         final item = newsList[index];
                         return NewsCard(
                           title: item['title'] ?? '',
-                          description:
-                              removeHtmlTags(item['description'] ?? ''),
+                          id: item['id'] ?? 0,
+                          description: removeHtmlTags(item['description'] ?? ''),
                           imageUrl: item['post_image'] ?? '',
                           category: item['category'] ?? '',
                           onTap: () {

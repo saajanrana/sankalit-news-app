@@ -34,8 +34,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   List<Map<String, dynamic>> trendingNews = [];
   Map<String, List<Map<String, dynamic>>> categorizedNews = {};
   List<Map<String, dynamic>> categorizedNewsList = [];
-   String selectedCatId = '';
+
+  String selectedCatId = '';
   bool isLoading = true;
+
+  List<dynamic> adsList = [];
 
   final categoryName = "उत्तराखण्ड";
 
@@ -55,11 +58,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void _initializeData() async {
     setState(() => isLoading = true);
 
-    await Future.wait([
-      fetchCategories(),
-      fetchBreakingAndTrendingNews(),
-      fetchHomeScreenData(),
-    ]);
+    await Future.wait([fetchCategories(), fetchBreakingAndTrendingNews(), fetchHomeScreenData(), fetchAdsData()]);
 
     setState(() => isLoading = false);
   }
@@ -80,18 +79,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
           data.forEach((key, value) {
             if (value is List && value.isNotEmpty) {
-              final List<Map<String, dynamic>> subCategories =
-                  value.map((item) => Map<String, dynamic>.from(item)).toList();
+              final List<Map<String, dynamic>> subCategories = value.map((item) => Map<String, dynamic>.from(item)).toList();
 
               formattedData[key] = subCategories;
 
               // ✅ Add each subcategory (id + name)
               for (var item in subCategories) {
                 if (item.containsKey('id') && item.containsKey('name')) {
-                  homeCategories.add({
-                    'id': item['id'].toString(),
-                    'name': item['name'].toString()
-                  });
+                  homeCategories.add({'id': item['id'].toString(), 'name': item['name'].toString()});
                 }
               }
             }
@@ -109,23 +104,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Future<void> fetchBreakingAndTrendingNews() async {
     try {
-      final response =
-          await ApiServices.get(endpoint: "breaking-trending-news");
-      print("Breaking & Trending News Response: $response");
-
+      final response = await ApiServices.get(endpoint: "breaking-trending-news");
       if (response != null && response['success'] == true) {
         final data = response['data'];
-
         if (data != null && data is Map<String, dynamic> && data.isNotEmpty) {
           final List<dynamic> breakingNewsList = data['breaking_news'] ?? [];
-          final List<Map<String, dynamic>> breaking = breakingNewsList
-              .map((item) => Map<String, dynamic>.from(item))
-              .toList();
-
+          final List<Map<String, dynamic>> breaking = breakingNewsList.map((item) => Map<String, dynamic>.from(item)).toList();
           final List<dynamic> trendingNewsList = data['trending_news'] ?? [];
-          final List<Map<String, dynamic>> trending = trendingNewsList
-              .map((item) => Map<String, dynamic>.from(item))
-              .toList();
+          final List<Map<String, dynamic>> trending = trendingNewsList.map((item) => Map<String, dynamic>.from(item)).toList();
 
           breakingNews = breaking;
           trendingNews = trending;
@@ -200,7 +186,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Future<void> _fetchNewsByCategory(String newsCategory, int newsItemId) async {
     try {
-      print("Fetching news for category: $newsCategory, itemId: $newsItemId");
       setState(() {
         isLoading = true;
         categorizedNews.clear();
@@ -211,7 +196,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       final response = await ApiServices.get(
         endpoint: "news-by-category?cid=$newsItemId",
       );
-      print("response: $response");
 
       if (response != null && response['success'] == true) {
         List<dynamic> newNews = response['data']['news'] ?? [];
@@ -262,15 +246,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  final List<String> imageUrls = [
-    'https://sankalit.com/images/augtop1.jpeg',
-    'https://sankalit.com/images/augtop2.jpeg',
-  ];
-
   void _onScroll() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
       // Load more data if needed
+    }
+  }
+
+  Future<void> fetchAdsData() async {
+    try {
+      final response = await ApiServices.get(endpoint: "ads-content");
+      if (response['success']) {
+        setState(() {
+          adsList = response['data'];
+        });
+      }
+      print("responseFetchAdsData:::::>>>$response");
+    } catch (e) {
+      print("Error in fetchAdsDataFnc::::$e");
     }
   }
 
@@ -286,15 +278,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("latest news : $categorizedNewsList");
     return Scaffold(
       backgroundColor: Colors.white,
       endDrawer: const CustomDrawer(),
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(
-                left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
+            padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
             child: const CommonHeader(),
           ),
           Expanded(
@@ -307,19 +297,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SliverToBoxAdapter(
                     child: BreakingNewsTicker(
                       breakingText: 'Breaking',
-                      newsText: breakingNews.isNotEmpty
-                          ? breakingNews
-                              .map((item) => item['title'])
-                              .join(' | ')
-                          : 'Loading breaking news...',
+                      newsText: breakingNews.isNotEmpty ? breakingNews.map((item) => item['title']).join(' | ') : 'Loading breaking news...',
                     ),
                   ),
 
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
 
                   // Ads Image section
-                  AddsDynamicImageList(imageUrls: imageUrls),
-
+                  adsList.isEmpty ? SliverToBoxAdapter(child: SizedBox()) : AddsDynamicImageList(imageUrls: adsList),
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
 
                   // Trending News Section
@@ -350,8 +335,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   // Category Tabs
                   SliverToBoxAdapter(
                     child: HorizontalCategoryTabs(
-                      categories:
-                          homeCategories.map((cat) => cat['name']!).toList(),
+                      categories: homeCategories.map((cat) => cat['name']!).toList(),
                       onTabSelected: (index) {
                         final selectedCategory = homeCategories[index];
                         final categoryId = selectedCategory['id'];
@@ -362,8 +346,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           print("Home selected");
                           fetchHomeScreenData();
                         } else {
-                          _fetchNewsByCategory(
-                              categoryName!, int.parse(categoryId!));
+                          _fetchNewsByCategory(categoryName!, int.parse(categoryId!));
                         }
                       },
                     ),
@@ -372,7 +355,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
 
                   // Ads Image section
-                  AddsDynamicImageList(imageUrls: imageUrls),
+                  adsList.isEmpty ? const SliverToBoxAdapter(child: SizedBox()) : AddsDynamicImageList(imageUrls: adsList),
 
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
 
@@ -398,8 +381,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           itemBuilder: (context, index) => Container(
             width: 300.w,
             margin: EdgeInsets.symmetric(horizontal: 8.w),
-            child:
-                _buildCarouselItem(imageUrl: '', title: '', newsItemId: null),
+            child: _buildCarouselItem(imageUrl: '', title: '', newsItemId: null),
           ),
         ),
       );
@@ -444,8 +426,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   List<Widget> _buildAllCategoriesNews() {
     List<Widget> slivers = [];
-    print("selectedId::::::$selectedCatId");
-
     if (isLoading) {
       // ✅ Show shimmer placeholders
       slivers.add(
@@ -490,6 +470,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           borderRadius: BorderRadius.circular(12.r),
                         ),
                       ),
+
                       SizedBox(height: 6.h),
 
                       // ✅ Description placeholder line 2
@@ -516,7 +497,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // ✅ If not loading, show actual data
     for (var categoryData in categorizedNewsList) {
       // print("categoryData<<<<<<<<<<<<<<<<<<<<<<<<<<<: $categoryData");
-      final categoryId = categoryData['id'] ;
+      final categoryId = categoryData['id'];
       final categoryName = categoryData['category'] as String;
       final newsList = categoryData['news'] as List<Map<String, dynamic>>;
 
@@ -546,14 +527,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           delegate: SliverChildBuilderDelegate(
             (context, index) {
               final item = newsList[index];
-
+              // print("newsData:::::$item");
               return Column(
                 children: [
                   Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                     child: NewsCard(
                       title: item['title'] ?? '',
+                      id: item['id'] ?? "",
                       description: removeHtmlTags(item['description'] ?? ''),
                       imageUrl: item['post_image'] ?? '',
                       category: item['category'],
@@ -562,8 +543,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => NewsDetailScreen(
-                              categorizedNews: item['category'],
-                              newsItemId: int.parse(selectedCatId),
+                              categorizedNews: item['category'].toString(),
+                              newsItemId: item['id'],
                             ),
                           ),
                         );
@@ -590,7 +571,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (showReadmoreButton) {
         // final categoryId = categoryData['categoryId'] as int;
         final categoryName = categoryData['category'] as String;
-        print("categoryId>>>>>>>>>>>: $categoryId, categoryName>>>>>>>>>>>>>>>: $categoryName");
         slivers.add(SliverToBoxAdapter(
           child: Center(
             child: ElevatedButton(
@@ -626,19 +606,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
 // ✅ Dynamic image list
       slivers.add(SliverToBoxAdapter(child: SizedBox(height: 20.h)));
-      slivers.add(AddsDynamicImageList(imageUrls: imageUrls));
+      slivers.add(
+        adsList.isEmpty ? SliverToBoxAdapter(child: SizedBox()) : AddsDynamicImageList(imageUrls: adsList),
+      );
       slivers.add(SliverToBoxAdapter(child: SizedBox(height: 20.h)));
     }
 
     return slivers;
   }
 
-  Widget _buildCarouselItem(
-      {required String? imageUrl,
-      required String? title,
-      required newsItemId}) {
-    bool showShimmer = (imageUrl == null || imageUrl.isEmpty) ||
-        (title == null || title.isEmpty);
+  Widget _buildCarouselItem({required String? imageUrl, required String? title, required newsItemId}) {
+    bool showShimmer = (imageUrl == null || imageUrl.isEmpty) || (title == null || title.isEmpty);
 
     if (showShimmer) {
       return Shimmer.fromColors(
@@ -685,10 +663,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     color: Colors.grey.shade200,
                     child: Center(
                       child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                            : null,
+                        value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
                       ),
                     ),
                   );
@@ -726,8 +701,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     bottomRight: Radius.circular(16),
                   ),
                 ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Text(
                   title,
                   textAlign: TextAlign.center,

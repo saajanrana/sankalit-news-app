@@ -1,3 +1,4 @@
+import 'package:Sankalit/services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:Sankalit/core/app_text_style.dart';
@@ -15,7 +16,7 @@ class VideoNewsScreen extends StatefulWidget {
 }
 
 class _VideoNewsScreenState extends State<VideoNewsScreen> {
-  List<VideoNewsModel> videoNews = [];
+  List<dynamic> videoNews = [];
 
   @override
   void initState() {
@@ -23,10 +24,23 @@ class _VideoNewsScreenState extends State<VideoNewsScreen> {
     _loadVideoNews();
   }
 
-  void _loadVideoNews() {
-    setState(() {
-      videoNews = VideoNewsModel.getMockVideos();
-    });
+  void _loadVideoNews() async {
+    try {
+      final response = await ApiServices.get(endpoint: "video-news");
+      print("response::::::${response['Video News']}");
+      // if (response['noInternet']) {
+      //   return;
+      // }
+      if (response['Video News']['success']) {
+        setState(() {
+          videoNews = response['Video News']['data'];
+        });
+      } else {
+        print("something went wrong");
+      }
+    } catch (e) {
+      print("Error in loadVideoNews:::::$e");
+    }
   }
 
   @override
@@ -54,23 +68,30 @@ class _VideoNewsScreenState extends State<VideoNewsScreen> {
                     style: AppTextStyles.heading2.copyWith(color: AppTheme.primaryColor),
                   ),
                   SizedBox(height: 10.h),
-                  Expanded(
-                      child: ListView.builder(
-                    padding: EdgeInsets.all(0.sp),
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.h),
-                        child: VideoNewsCard( 
-                          videoUrl: "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
-                          videoNewsTitle: "बागेश्वर के हरबाड़ में भारी बारिश और भूस्खलन से तबाही, कई घर क्षतिग्रस्त",
-                          dateString: "19-05-2025",
-                          onPressSaveBtn: () {},
-                          onPressShareBtn: () {},
-                        ),
-                      );
-                    },
-                  ))
+                  videoNews.isNotEmpty
+                      ? Expanded(
+                          child: ListView.builder(
+                          padding: EdgeInsets.all(0.sp),
+                          scrollDirection: Axis.vertical,
+                          itemCount: videoNews.length,
+                          itemBuilder: (context, index) {
+                            final item = videoNews[index];
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10.h),
+                              child: VideoNewsCard(
+                                id: item['id'],
+                                videoUrl: item['video_link'],
+                                videoNewsTitle: item['title'].toString(),
+                                dateString: item['created_on'],
+                                onPressSaveBtn: () {},
+                                onPressShareBtn: () {},
+                              ),
+                            );
+                          },
+                        ))
+                      : const SizedBox(
+                          child: Text("No Data Found!"),
+                        )
                 ],
               ),
             ),
