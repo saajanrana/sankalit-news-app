@@ -156,7 +156,7 @@ class _NewsCategoryScreenState extends ConsumerState<NewsCategoryScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => NewsDetailScreen(
-                                  categorizedNews: item['category'] ?? '',
+                                  categorizedNews: widget.categorizedNews,
                                   newsItemId: item['id'],
                                 ),
                               ),
