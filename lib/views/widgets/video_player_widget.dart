@@ -42,11 +42,9 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         final videoId = YoutubePlayer.convertUrlToId(widget.videoUrl);
         _youtubeController = YoutubePlayerController(
           initialVideoId: videoId ?? "",
-          flags: const YoutubePlayerFlags(
-            autoPlay: false,
-            mute: false,
-          ),
+          flags: const YoutubePlayerFlags(autoPlay: false, mute: false, showLiveFullscreenButton: false),
         );
+
         setState(() {
           _isInitialized = true;
         });
@@ -61,7 +59,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           videoPlayerController: _videoController,
           autoPlay: false,
           looping: false,
-          allowFullScreen: true,
+          allowFullScreen: false,
           allowMuting: true,
           showControls: true,
           materialProgressColors: ChewieProgressColors(
@@ -104,6 +102,12 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                 ? YoutubePlayer(
                     controller: _youtubeController!,
                     showVideoProgressIndicator: true,
+                    bottomActions: [
+                      CurrentPosition(),
+                      ProgressBar(isExpanded: true),
+                      RemainingDuration(),
+                      PlaybackSpeedButton(),
+                    ],
                   )
                 : Center(
                     child: Column(

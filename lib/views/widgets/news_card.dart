@@ -43,13 +43,8 @@ class NewsCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // bool isBookmarked = false;
     final bookmarks = ref.watch(newsBookmarkProvider);
-
     final isBookmarked = bookmarks.contains(id);
-
-    print('bookMarkIds::::>>>>$bookmarks');
-
     return InkWell(
       onTap: onTap,
       child: Container(

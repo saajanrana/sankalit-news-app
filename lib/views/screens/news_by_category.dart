@@ -145,6 +145,7 @@ class _NewsCategoryScreenState extends ConsumerState<NewsCategoryScreen> {
                         }
 
                         final item = newsList[index];
+
                         return NewsCard(
                           title: item['title'] ?? '',
                           id: item['id'] ?? 0,

@@ -4,6 +4,7 @@ import 'package:Sankalit/core/constants.dart';
 import 'package:Sankalit/core/theme.dart';
 import 'package:Sankalit/services/api_services.dart';
 import 'package:Sankalit/viewmodels/news_viewmodel.dart';
+import 'package:Sankalit/views/screens/news_detail_screen.dart';
 import 'package:Sankalit/views/widgets/common_header.dart';
 import 'package:Sankalit/views/widgets/news_card.dart';
 import 'package:Sankalit/views/widgets/no_data_found_screen.dart';
@@ -41,6 +42,10 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
       if (response['success']) {
         setState(() {
           savedNewsList = response['data'];
+          isLoading = false;
+        });
+      } else {
+        setState(() {
           isLoading = false;
         });
       }
@@ -118,7 +123,23 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
         itemCount: savedNewsList.length,
         itemBuilder: (context, index) {
           final item = savedNewsList[index];
-          return NewsCard(imageUrl: item['post_image'], title: item['title'], description: item['description'], id: item['id'], category: item['category'], onTap: () {});
+          return NewsCard(
+              imageUrl: item['post_image'],
+              title: item['title'],
+              description: item['description'],
+              id: item['id'],
+              category: item['category'],
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NewsDetailScreen(
+                      categorizedNews: item['category'].toString(),
+                      newsItemId: item['id'],
+                    ),
+                  ),
+                );
+              });
         },
       );
     }
@@ -144,7 +165,6 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
               videoUrl: item['video_link'],
               videoNewsTitle: item['title'],
               dateString: item['created_on'],
-              onPressSaveBtn: () {},
               onPressShareBtn: () {},
             ),
           );

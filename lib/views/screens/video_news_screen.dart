@@ -2,8 +2,11 @@ import 'package:Sankalit/core/app_text_style.dart';
 import 'package:Sankalit/core/theme.dart';
 import 'package:Sankalit/services/api_services.dart';
 import 'package:Sankalit/views/widgets/common_header.dart';
+import 'package:Sankalit/views/widgets/common_share_url_model.dart';
+import 'package:Sankalit/views/widgets/no_data_found_screen.dart';
 import 'package:Sankalit/views/widgets/video_screen_widgets/video_news_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -19,20 +22,20 @@ class _VideoNewsScreenState extends State<VideoNewsScreen> {
   int page = 1;
   bool isLoadingMore = false;
   bool hasMoreData = true; // flag to stop API calls if no more data
-
   final ScrollController _scrollController = ScrollController();
+
+  bool isDataLoading = true;
+  var Url;
 
   @override
   void initState() {
     super.initState();
     _loadVideoNews();
+    Url = dotenv.env['URL'];
 
     // 👇 Attach scroll listener
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent - 200 &&
-          !isLoadingMore &&
-          hasMoreData) {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 && !isLoadingMore && hasMoreData) {
         _loadMoreNews();
       }
     });
@@ -51,23 +54,31 @@ class _VideoNewsScreenState extends State<VideoNewsScreen> {
 
       if (response['Video News']['success']) {
         final List<dynamic> newData = response['Video News']['data'];
-
         setState(() {
           if (isRefresh) {
             videoNews = newData; // replace data on refresh
+            isDataLoading = false;
           } else {
             videoNews.addAll(newData); // append data for pagination
+            isDataLoading = false;
           }
 
           // if no more data returned
           if (newData.isEmpty) {
             hasMoreData = false;
+            isDataLoading = false;
           }
         });
       } else {
+        setState(() {
+          isDataLoading = false;
+        });
         print("something went wrong");
       }
     } catch (e) {
+      setState(() {
+        isDataLoading = false;
+      });
       print("Error in loadVideoNews:::::$e");
     }
   }
@@ -103,48 +114,12 @@ class _VideoNewsScreenState extends State<VideoNewsScreen> {
                 SizedBox(height: 30.h),
                 const CommonHeader(),
                 SizedBox(height: 20.h),
-                Text("WATCH",
-                    style: AppTextStyles.heading2
-                        .copyWith(color: AppTheme.primaryColor)),
+                Text("WATCH", style: AppTextStyles.heading2.copyWith(color: AppTheme.primaryColor)),
                 SizedBox(height: 10.h),
 
                 // News List
-                videoNews.isNotEmpty
+                isDataLoading
                     ? Expanded(
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          padding: EdgeInsets.zero,
-                          itemCount:
-                              videoNews.length + (isLoadingMore ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (index < videoNews.length) {
-                              final item = videoNews[index];
-                              return Padding(
-                                padding: EdgeInsets.symmetric(vertical: 10.h),
-                                child: VideoNewsCard(
-                                  id: item['id'],
-                                  videoUrl: item['video_link'],
-                                  videoNewsTitle: item['title'].toString(),
-                                  dateString: item['created_on'],
-                                  onPressSaveBtn: () {},
-                                  onPressShareBtn: () {},
-                                ),
-                              );
-                            } else {
-                              // Pagination loader
-                              return Padding(
-                                padding: EdgeInsets.symmetric(vertical: 20.h),
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    color: AppTheme.primaryColor,
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      )
-                    : Expanded(
                         child: ListView.builder(
                           padding: EdgeInsets.zero,
                           itemCount: 5,
@@ -190,6 +165,44 @@ class _VideoNewsScreenState extends State<VideoNewsScreen> {
                           },
                         ),
                       )
+                    : videoNews.isNotEmpty
+                        ? Expanded(
+                            child: ListView.builder(
+                              controller: _scrollController,
+                              padding: EdgeInsets.zero,
+                              itemCount: videoNews.length + (isLoadingMore ? 1 : 0),
+                              itemBuilder: (context, index) {
+                                if (index < videoNews.length) {
+                                  final item = videoNews[index];
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                                    child: VideoNewsCard(
+                                      id: item['id'],
+                                      videoUrl: item['video_link'],
+                                      videoNewsTitle: item['title'].toString(),
+                                      dateString: item['created_on'],
+                                      onPressShareBtn: () {
+                                        String slug = item!['slug_title'] ?? '';
+                                        String formattedSlug = slug.replaceAll(" ", "_");
+                                        showShareModal(context, '$Url/${item['id'] ?? 0}/$formattedSlug');
+                                      },
+                                    ),
+                                  );
+                                } else {
+                                  // Pagination loader
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 20.h),
+                                    child: const Center(
+                                      child: CircularProgressIndicator(
+                                        color: AppTheme.primaryColor,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          )
+                        : const NoDataFoundScreen()
               ],
             ),
           ),

@@ -56,7 +56,6 @@ dependencies:
   fluttertoast: ^8.2.12
   youtube_player_flutter: ^9.1.2
   flutter_html_iframe: ^3.0.0
-  external_app_launcher: ^4.0.3
 
 
 dev_dependencies:

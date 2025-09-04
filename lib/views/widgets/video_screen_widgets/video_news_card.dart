@@ -14,7 +14,6 @@ class VideoNewsCard extends ConsumerStatefulWidget {
   final String? videoNewsTitle;
   final String? dateString;
   final VoidCallback? onPressShareBtn;
-  final VoidCallback? onPressSaveBtn;
 
   const VideoNewsCard({
     super.key,
@@ -22,7 +21,6 @@ class VideoNewsCard extends ConsumerStatefulWidget {
     required this.videoUrl,
     required this.dateString,
     required this.videoNewsTitle,
-    required this.onPressSaveBtn,
     required this.onPressShareBtn,
   });
 
@@ -37,9 +35,7 @@ class _VideoNewsCardState extends ConsumerState<VideoNewsCard> {
 
     final isBookmarked = widget.id != null && bookmarks.contains(widget.id);
 
-    final bool isLoading = widget.videoUrl == null ||
-        widget.videoNewsTitle == null ||
-        widget.dateString == null;
+    final bool isLoading = widget.videoUrl == null || widget.videoNewsTitle == null || widget.dateString == null;
 
     if (isLoading) {
       return _buildShimmer();
@@ -84,9 +80,7 @@ class _VideoNewsCardState extends ConsumerState<VideoNewsCard> {
                   child: IconButton(
                     padding: EdgeInsets.zero,
                     icon: Image.asset(
-                      isBookmarked
-                          ? 'assets/icons/bookmarkActive.png'
-                          : 'assets/icons/bookmark.png',
+                      isBookmarked ? 'assets/icons/bookmarkActive.png' : 'assets/icons/bookmark.png',
                       width: 24.w,
                       height: 24.h,
                       fit: BoxFit.contain,
