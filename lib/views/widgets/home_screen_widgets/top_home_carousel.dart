@@ -1,8 +1,8 @@
+import 'package:Sankalit/core/app_text_style.dart';
+import 'package:Sankalit/core/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:marquee/marquee.dart';
-import 'package:Sankalit/core/app_text_style.dart';
-import 'package:Sankalit/core/theme.dart';
 
 class BreakingNewsTicker extends StatelessWidget {
   final String breakingText;
@@ -46,8 +46,8 @@ class BreakingNewsTicker extends StatelessWidget {
                 ),
                 scrollAxis: Axis.horizontal,
                 blankSpace: 50.w,
-                velocity: 40.0, // speed
-                pauseAfterRound: Duration(seconds: 0),
+                velocity: 30.0, // speed
+                pauseAfterRound: Duration(seconds: 2),
                 startPadding: 10.w,
                 accelerationDuration: Duration(seconds: 2),
                 accelerationCurve: Curves.linear,

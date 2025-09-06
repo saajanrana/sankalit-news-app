@@ -2,29 +2,29 @@ import 'package:Sankalit/core/app_text_style.dart';
 import 'package:Sankalit/core/theme.dart';
 import 'package:Sankalit/services/api_services.dart';
 import 'package:Sankalit/viewmodels/category_viewmodel.dart';
+import 'package:Sankalit/views/screens/main_screen.dart';
 import 'package:Sankalit/views/screens/news_by_category.dart';
 import 'package:Sankalit/views/screens/news_detail_screen.dart';
 import 'package:Sankalit/views/widgets/common_header.dart';
 import 'package:Sankalit/views/widgets/home_screen_widgets/home_add_section.dart';
 import 'package:Sankalit/views/widgets/home_screen_widgets/home_category_scroller.dart';
 import 'package:Sankalit/views/widgets/home_screen_widgets/top_home_carousel.dart';
+import 'package:Sankalit/views/widgets/no_internet.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import '../widgets/custom_drawer.dart';
 import '../widgets/news_card.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
-
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
-
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   late ScrollController _scrollController;
   bool showReadmoreButton = false;
@@ -58,15 +58,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void _initializeData() async {
     setState(() => isLoading = true);
 
-    await Future.wait([fetchCategories(), fetchBreakingAndTrendingNews(), fetchHomeScreenData(), fetchAdsData()]);
-
+    await Future.wait([
+      fetchCategories(),
+      fetchBreakingAndTrendingNews(),
+      fetchHomeScreenData(),
+      fetchAdsData()
+    ]);
+    if (!mounted) return;
     setState(() => isLoading = false);
   }
 
   Future<void> fetchCategories() async {
     try {
       final response = await ApiServices.get(endpoint: "category");
-      print("Categories Response: $response");
+      if (response.containsKey("noInternet") &&
+          response["noInternet"] == true) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NoInternetWidget(
+              onRetry: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const MainScreen(initialIndex: 0)),
+                );
+              },
+            ),
+          ),
+        );
+        return;
+      }
 
       if (response != null && response['success'] == true) {
         final data = response['data'];
@@ -79,14 +101,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
           data.forEach((key, value) {
             if (value is List && value.isNotEmpty) {
-              final List<Map<String, dynamic>> subCategories = value.map((item) => Map<String, dynamic>.from(item)).toList();
+              final List<Map<String, dynamic>> subCategories =
+                  value.map((item) => Map<String, dynamic>.from(item)).toList();
 
               formattedData[key] = subCategories;
 
               // ✅ Add each subcategory (id + name)
               for (var item in subCategories) {
                 if (item.containsKey('id') && item.containsKey('name')) {
-                  homeCategories.add({'id': item['id'].toString(), 'name': item['name'].toString()});
+                  homeCategories.add({
+                    'id': item['id'].toString(),
+                    'name': item['name'].toString()
+                  });
                 }
               }
             }
@@ -104,14 +130,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Future<void> fetchBreakingAndTrendingNews() async {
     try {
-      final response = await ApiServices.get(endpoint: "breaking-trending-news");
+      final response =
+          await ApiServices.get(endpoint: "breaking-trending-news");
       if (response != null && response['success'] == true) {
         final data = response['data'];
         if (data != null && data is Map<String, dynamic> && data.isNotEmpty) {
           final List<dynamic> breakingNewsList = data['breaking_news'] ?? [];
-          final List<Map<String, dynamic>> breaking = breakingNewsList.map((item) => Map<String, dynamic>.from(item)).toList();
+          final List<Map<String, dynamic>> breaking = breakingNewsList
+              .map((item) => Map<String, dynamic>.from(item))
+              .toList();
           final List<dynamic> trendingNewsList = data['trending_news'] ?? [];
-          final List<Map<String, dynamic>> trending = trendingNewsList.map((item) => Map<String, dynamic>.from(item)).toList();
+          final List<Map<String, dynamic>> trending = trendingNewsList
+              .map((item) => Map<String, dynamic>.from(item))
+              .toList();
 
           breakingNews = breaking;
           trendingNews = trending;
@@ -127,7 +158,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> fetchHomeScreenData() async {
     setState(() {
       isLoading = true;
-      showReadmoreButton = false;
+
       categorizedNews.clear();
       categorizedNewsList.clear(); // ✅ Clear old data before adding new
       categorizedNews = {};
@@ -138,7 +169,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       final response = await ApiServices.get(endpoint: "home");
       if (response != null && response['success'] == true) {
         final data = response['data'];
-
+        print("Home Screen Data: $response");
         if (data != null && data is Map<String, dynamic> && data.isNotEmpty) {
           Map<String, List<Map<String, dynamic>>> tempMap = {};
           List<Map<String, dynamic>> categoryObjectList = [];
@@ -196,6 +227,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       final response = await ApiServices.get(
         endpoint: "news-by-category?cid=$newsItemId",
       );
+      if (response.containsKey("noInternet") &&
+          response["noInternet"] == true) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NoInternetWidget(
+              onRetry: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const MainScreen(initialIndex: 0)),
+                );
+              },
+            ),
+          ),
+        );
+        return;
+      }
 
       if (response != null && response['success'] == true) {
         List<dynamic> newNews = response['data']['news'] ?? [];
@@ -247,9 +296,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-      // Load more data if needed
-    }
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {}
   }
 
   Future<void> fetchAdsData() async {
@@ -263,6 +311,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       print("responseFetchAdsData:::::>>>$response");
     } catch (e) {
       print("Error in fetchAdsDataFnc::::$e");
+    }
+  }
+
+  String formatDate(String date) {
+    try {
+      DateTime parsedDate = DateTime.parse(date);
+      return DateFormat("dd-MMM-yyyy").format(parsedDate);
+    } catch (e) {
+      return date; // return original if parsing fails
     }
   }
 
@@ -280,17 +337,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      endDrawer: const CustomDrawer(),
+      // endDrawer: const CustomDrawer(),
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
+            padding: EdgeInsets.only(
+                left: 16.w, right: 16.w, top: 50.h, bottom: 20.h),
             child: const CommonHeader(),
           ),
           Expanded(
             child: RefreshIndicator(
               onRefresh: _onRefresh,
-               color: AppTheme.primaryColor,
+              color: AppTheme.primaryColor,
               child: CustomScrollView(
                 controller: _scrollController,
                 slivers: [
@@ -298,14 +356,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SliverToBoxAdapter(
                     child: BreakingNewsTicker(
                       breakingText: 'Breaking',
-                      newsText: breakingNews.isNotEmpty ? breakingNews.map((item) => item['title']).join(' | ') : 'Loading breaking news...',
+                      newsText: breakingNews.isNotEmpty
+                          ? breakingNews
+                              .map((item) => item['title'])
+                              .join(' | ')
+                          : 'Loading breaking news...',
                     ),
                   ),
 
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
 
-                  // Ads Image section
-                  adsList.isEmpty ? SliverToBoxAdapter(child: SizedBox()) : AddsDynamicImageList(imageUrls: adsList),
+                  adsList.isEmpty
+                      ? SliverToBoxAdapter(child: SizedBox())
+                      : AddsDynamicImageList(imageUrls: adsList),
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
 
                   // Trending News Section
@@ -336,7 +399,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   // Category Tabs
                   SliverToBoxAdapter(
                     child: HorizontalCategoryTabs(
-                      categories: homeCategories.map((cat) => cat['name']!).toList(),
+                      categories:
+                          homeCategories.map((cat) => cat['name']!).toList(),
                       onTabSelected: (index) {
                         final selectedCategory = homeCategories[index];
                         final categoryId = selectedCategory['id'];
@@ -344,10 +408,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         selectedCatId = selectedCategory['id']!;
 
                         if (categoryId == '01') {
-                          print("Home selected");
+                          showReadmoreButton = false;
                           fetchHomeScreenData();
                         } else {
-                          _fetchNewsByCategory(categoryName!, int.parse(categoryId!));
+                          showReadmoreButton = true;
+                          _fetchNewsByCategory(
+                              categoryName!, int.parse(categoryId!));
                         }
                       },
                     ),
@@ -356,7 +422,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
 
                   // Ads Image section
-                  adsList.isEmpty ? const SliverToBoxAdapter(child: SizedBox()) : AddsDynamicImageList(imageUrls: adsList),
+                  adsList.isEmpty
+                      ? const SliverToBoxAdapter(child: SizedBox())
+                      : AddsDynamicImageList(imageUrls: adsList),
 
                   SliverToBoxAdapter(child: SizedBox(height: 20.h)),
 
@@ -375,14 +443,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _buildTrendingNewsCarousel() {
     if (trendingNews.isEmpty) {
       return SizedBox(
-        height: 200.h,
+        height: 230.h,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: 3,
           itemBuilder: (context, index) => Container(
             width: 300.w,
             margin: EdgeInsets.symmetric(horizontal: 8.w),
-            child: _buildCarouselItem(imageUrl: '', title: '', newsItemId:'', categorizedNews: ''),
+            child: _buildCarouselItem(
+                imageUrl: '', title: '', newsItemId: '', categorizedNews: ''),
           ),
         ),
       );
@@ -394,11 +463,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           imageUrl: item['post_image'] ?? '',
           title: item['title'] ?? '',
           newsItemId: item['id'] ?? 0,
-          categorizedNews: item['category_name'] ?? '' ,
+          categorizedNews: item['category_name'] ?? '',
         );
       }).toList(),
       options: CarouselOptions(
-        height: 200.h,
+        height: 250.h,
         autoPlay: true,
         enlargeCenterPage: true,
         viewportFraction: 0.9,
@@ -498,9 +567,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     // ✅ If not loading, show actual data
     for (var categoryData in categorizedNewsList) {
-      // print("categoryData<<<<<<<<<<<<<<<<<<<<<<<<<<<: $categoryData");
-      final categoryId = categoryData['id'];
-      final categoryName = categoryData['category'] as String;
+      final categoryText = categoryData['category'] as String;
+
+      final parts = categoryText.split("_");
+
+      final categoryName = parts[0];
+
+      final categoryNumber = parts.length > 1 ? parts[1] : null;
+
       final newsList = categoryData['news'] as List<Map<String, dynamic>>;
 
       // Category Header
@@ -529,17 +603,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           delegate: SliverChildBuilderDelegate(
             (context, index) {
               final item = newsList[index];
-              // print("newsData:::::$item");
               return Column(
                 children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                     child: NewsCard(
                       title: item['title'] ?? '',
                       id: item['id'] ?? "",
                       description: removeHtmlTags(item['description'] ?? ''),
                       imageUrl: item['post_image'] ?? '',
                       category: item['category'],
+                      created_on: formatDate(item['created_on'] ?? ''),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -570,46 +645,47 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       slivers.add(SliverToBoxAdapter(child: SizedBox(height: 10.h)));
 
-      if (showReadmoreButton) {
-        // final categoryId = categoryData['categoryId'] as int;
-        final categoryName = categoryData['category'] as String;
-        slivers.add(SliverToBoxAdapter(
-          child: Center(
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NewsCategoryScreen(
-                      categorizedNews: categoryName,
-                      newsItemId: int.parse(selectedCatId),
-                    ),
+      // final categoryId = categoryData['categoryId'] as int;
+      slivers.add(SliverToBoxAdapter(
+        child: Center(
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NewsCategoryScreen(
+                    categorizedNews: categoryName,
+                    newsItemId: showReadmoreButton
+                        ? int.parse(selectedCatId)
+                        : int.parse(categoryNumber!),
                   ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.errorColor,
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
                 ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.errorColor,
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
               ),
-              child: Text(
-                "READ MORE",
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+            ),
+            child: Text(
+              "READ MORE",
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
           ),
-        ));
-      }
-// ✅ Dynamic image list
+        ),
+      ));
+
       slivers.add(SliverToBoxAdapter(child: SizedBox(height: 20.h)));
       slivers.add(
-        adsList.isEmpty ? SliverToBoxAdapter(child: SizedBox()) : AddsDynamicImageList(imageUrls: adsList),
+        adsList.isEmpty
+            ? SliverToBoxAdapter(child: SizedBox())
+            : AddsDynamicImageList(imageUrls: adsList),
       );
       slivers.add(SliverToBoxAdapter(child: SizedBox(height: 20.h)));
     }
@@ -617,8 +693,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return slivers;
   }
 
-  Widget _buildCarouselItem({required String? imageUrl, required String? title, required newsItemId, required categorizedNews}) {
-    bool showShimmer = (imageUrl == null || imageUrl.isEmpty) || (title == null || title.isEmpty);
+  Widget _buildCarouselItem(
+      {required String? imageUrl,
+      required String? title,
+      required newsItemId,
+      required categorizedNews}) {
+    bool showShimmer = (imageUrl == null || imageUrl.isEmpty) ||
+        (title == null || title.isEmpty);
     if (showShimmer) {
       return Shimmer.fromColors(
         baseColor: Colors.grey.shade300,
@@ -627,7 +708,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           borderRadius: BorderRadius.circular(16),
           child: Container(
             width: double.infinity,
-            height: 200,
+            height: 240,
             color: Colors.white,
           ),
         ),
@@ -650,12 +731,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
-              height: 200,
+              height: 400,
               child: Image.network(
                 imageUrl,
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
                 width: double.infinity,
                 height: double.infinity,
                 loadingBuilder: (context, child, loadingProgress) {
@@ -664,7 +745,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     color: Colors.grey.shade200,
                     child: Center(
                       child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
                       ),
                     ),
                   );
@@ -702,7 +786,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     bottomRight: Radius.circular(16),
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Text(
                   title,
                   textAlign: TextAlign.center,
@@ -720,7 +805,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             borderRadius: BorderRadius.circular(16),
             child: Container(
               width: double.infinity,
-              height: 200,
+              height: 400,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(

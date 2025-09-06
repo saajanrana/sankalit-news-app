@@ -2,9 +2,11 @@ import 'package:Sankalit/controller/book_mark_notifier.dart';
 import 'package:Sankalit/core/app_text_style.dart';
 import 'package:Sankalit/core/theme.dart';
 import 'package:Sankalit/services/api_services.dart';
+import 'package:Sankalit/views/screens/main_screen.dart';
 import 'package:Sankalit/views/widgets/common_header.dart';
 import 'package:Sankalit/views/widgets/common_share_url_model.dart';
 import 'package:Sankalit/views/widgets/news_card.dart';
+import 'package:Sankalit/views/widgets/no_internet.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -57,7 +59,25 @@ class _NewsDetailScreenState extends ConsumerState<NewsDetailScreen> {
     print("Fetching details for news ID: ${widget.newsItemId}");
     try {
       final response = await ApiServices.get(endpoint: "news-details?news_id=${widget.newsItemId}");
-
+if (response.containsKey("noInternet") &&
+          response["noInternet"] == true) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NoInternetWidget(
+              onRetry: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const MainScreen(initialIndex: 0,)), 
+                );
+              },
+            ),
+          ),
+        );
+        return;
+      }
       if (response != null && response['success'] == true) {
         if (response != null && response['success'] == true) {
           final data = response['data']['news_detail'];
@@ -95,7 +115,7 @@ class _NewsDetailScreenState extends ConsumerState<NewsDetailScreen> {
           : Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 40.h, bottom: 20.h),
+                  padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 50.h, bottom: 10.h),
                   child: const CommonHeader(
                     showBackBtn: true,
                   ),
@@ -113,7 +133,7 @@ class _NewsDetailScreenState extends ConsumerState<NewsDetailScreen> {
                           background: newsDetails!['post_image'] != null && newsDetails!['post_image'].isNotEmpty
                               ? CachedNetworkImage(
                                   imageUrl: newsDetails!['post_image'],
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.fill,
                                   placeholder: (context, url) => Container(
                                     color: Theme.of(context).colorScheme.surfaceVariant,
                                     child: const Center(
@@ -140,7 +160,7 @@ class _NewsDetailScreenState extends ConsumerState<NewsDetailScreen> {
                         ),
                       ),
 
-                      // ✅ Article Details
+                     
                       SliverToBoxAdapter(
                         child: Padding(
                           padding: EdgeInsets.all(16.w),
@@ -160,16 +180,16 @@ class _NewsDetailScreenState extends ConsumerState<NewsDetailScreen> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  widget.categorizedNews != "null"
+                                  newsDetails!['category_name'] != "null"
                                       ? Text(
-                                          widget.categorizedNews,
+                                           newsDetails!['category_name'] ?? '',
                                           style: AppTextStyles.heading3Hindi.copyWith(
                                             fontWeight: FontWeight.bold,
                                             color: AppTheme.lightTextPrimary,
                                           ),
                                         )
                                       : SizedBox(),
-                                  widget.categorizedNews != "null" ? SizedBox(width: 8.w) : SizedBox(),
+                                  // widget.categorizedNews != "null" ? SizedBox(width: 8.w) : SizedBox(),
                                   Text(
                                     DateFormat('dd-MMM-yyyy').format(
                                       DateTime.parse(newsDetails!['created_on']),
@@ -239,7 +259,7 @@ class _NewsDetailScreenState extends ConsumerState<NewsDetailScreen> {
                           alignment: Alignment.centerLeft,
                           padding: EdgeInsets.symmetric(horizontal: 20.w),
                           child: Text(
-                            'READ MORE',
+                            'RELATED NEWS',
                             style: AppTextStyles.heading2.copyWith(
                               fontWeight: FontWeight.bold,
                               color: AppTheme.darkTextPrimary,
@@ -251,10 +271,12 @@ class _NewsDetailScreenState extends ConsumerState<NewsDetailScreen> {
                         child: SizedBox(height: 10.h),
                       ),
                       // 📰 Suggested News List
+                      
                       SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
                             final item = suggestedNews[index];
+                            print("news details id >>>>>>>>>>>>>>${item['category']}");
                             return Padding(
                               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
                               child: NewsCard(

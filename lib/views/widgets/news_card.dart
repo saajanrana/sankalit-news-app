@@ -17,6 +17,7 @@ class NewsCard extends ConsumerWidget {
   final String? imageUrl;
   final String? publishedAt;
   final bool showBookmarkButton;
+  final String? created_on;
   final VoidCallback onTap;
 
   const NewsCard({
@@ -24,6 +25,7 @@ class NewsCard extends ConsumerWidget {
     required this.title,
     required this.id,
     this.description,
+    this.created_on,
     this.imageUrl,
     this.publishedAt,
     this.showBookmarkButton = false,
@@ -139,7 +141,7 @@ class NewsCard extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                DateFormat('dd-MMM-yyyy').format(publishedAt != null ? DateTime.parse(publishedAt!) : DateTime.now()),
+                                created_on ?? '',
                                 style: AppTextStyles.smallHindi.copyWith(
                                   color: AppTheme.lightTextPrimary,
                                 ),

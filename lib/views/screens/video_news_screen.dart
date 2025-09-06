@@ -1,9 +1,11 @@
 import 'package:Sankalit/core/app_text_style.dart';
 import 'package:Sankalit/core/theme.dart';
 import 'package:Sankalit/services/api_services.dart';
+import 'package:Sankalit/views/screens/main_screen.dart';
 import 'package:Sankalit/views/widgets/common_header.dart';
 import 'package:Sankalit/views/widgets/common_share_url_model.dart';
 import 'package:Sankalit/views/widgets/no_data_found_screen.dart';
+import 'package:Sankalit/views/widgets/no_internet.dart';
 import 'package:Sankalit/views/widgets/video_screen_widgets/video_news_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -50,7 +52,25 @@ class _VideoNewsScreenState extends State<VideoNewsScreen> {
   Future<void> _loadVideoNews({bool isRefresh = false}) async {
     try {
       final response = await ApiServices.get(endpoint: "video-news?page=$page");
-      print("response::::::${response['Video News']}");
+      if (response.containsKey("noInternet") &&
+          response["noInternet"] == true) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NoInternetWidget(
+              onRetry: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const MainScreen(initialIndex: 2,)), 
+                );
+              },
+            ),
+          ),
+        );
+        return;
+      }
 
       if (response['Video News']['success']) {
         final List<dynamic> newData = response['Video News']['data'];
@@ -111,7 +131,7 @@ class _VideoNewsScreenState extends State<VideoNewsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 30.h),
+                SizedBox(height: 40.h),
                 const CommonHeader(),
                 SizedBox(height: 20.h),
                 Text("WATCH", style: AppTextStyles.heading2.copyWith(color: AppTheme.primaryColor)),

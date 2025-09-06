@@ -1,7 +1,6 @@
 import 'package:Sankalit/core/app_text_style.dart';
 import 'package:Sankalit/core/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 
 class HorizontalCategoryTabs extends StatefulWidget {
   final List<String> categories;
@@ -21,23 +20,61 @@ class HorizontalCategoryTabs extends StatefulWidget {
 
 class _HorizontalCategoryTabsState extends State<HorizontalCategoryTabs> {
   late int selectedIndex;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     selectedIndex = widget.initialIndex;
+
+    // Delay centering initial tab until after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToCenter(selectedIndex);
+    });
   }
+
+  void _scrollToCenter(int index) {
+    final RenderBox? box = context.findRenderObject() as RenderBox?;
+    if (box == null) return;
+
+    // Find the widget by key
+    final key = ValueKey(index);
+    final contextBox = _keys[index].currentContext;
+    if (contextBox == null) return;
+
+    final RenderBox renderBox = contextBox.findRenderObject() as RenderBox;
+    final size = renderBox.size;
+    final position = renderBox.localToGlobal(Offset.zero);
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    final targetScrollOffset =
+        _scrollController.offset +
+        position.dx -
+        (screenWidth / 2) +
+        (size.width / 2);
+
+    _scrollController.animateTo(
+      targetScrollOffset,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  final List<GlobalKey> _keys = [];
 
   @override
   Widget build(BuildContext context) {
-    if (widget.categories.isEmpty) {
-      return _buildShimmerTabs();
+   
+
+    if (_keys.length != widget.categories.length) {
+      _keys.clear();
+      _keys.addAll(List.generate(widget.categories.length, (_) => GlobalKey()));
     }
 
-    // ✅ Otherwise, show actual category tabs
     return SizedBox(
-      height: 40,
+      height: 45,
       child: ListView.builder(
+        controller: _scrollController,
         scrollDirection: Axis.horizontal,
         itemCount: widget.categories.length,
         itemBuilder: (context, index) {
@@ -48,10 +85,12 @@ class _HorizontalCategoryTabsState extends State<HorizontalCategoryTabs> {
                 selectedIndex = index;
               });
               widget.onTabSelected(index);
+              _scrollToCenter(index); // 👈 center selected tab
             },
             child: Container(
+              key: _keys[index], // 👈 attach key for measurement
               margin: const EdgeInsets.symmetric(horizontal: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               decoration: BoxDecoration(
                 color: isSelected ? Colors.red : Colors.black,
                 borderRadius: BorderRadius.circular(6),
@@ -63,32 +102,6 @@ class _HorizontalCategoryTabsState extends State<HorizontalCategoryTabs> {
                     fontWeight: FontWeight.bold,
                     color: AppTheme.darkTextPrimary,
                   ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-  Widget _buildShimmerTabs() {
-    return Container(
-      height: 40,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 6, // number of shimmer placeholders
-        itemBuilder: (context, index) {
-          return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-            child: Shimmer.fromColors(
-              baseColor: Colors.grey.shade300,
-              highlightColor: Colors.grey.shade100,
-              child: Container(
-                width: 80,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(6),
                 ),
               ),
             ),

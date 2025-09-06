@@ -48,7 +48,7 @@ class AppStrings {
   static const String share = 'Share';
   static const String bookmark = 'Bookmark';
   static const String readMore = 'Read More';
-  static const String noDataFound = 'No Data Found!';
+  static const String noDataFound = 'No News Found !';
   static const String error = 'Error';
   static const String retry = 'Retry';
 }

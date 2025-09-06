@@ -1,16 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:Sankalit/core/constants.dart';
 import 'package:Sankalit/core/theme.dart';
 import 'package:Sankalit/views/screens/contact_us_screen.dart';
-import 'package:Sankalit/core/constants.dart';
-import 'home_screen.dart';
-import 'categories_screen.dart';
-import 'video_news_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'bookmarks_screen.dart';
+import 'categories_screen.dart';
+import 'home_screen.dart';
+import 'video_news_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+    final int initialIndex;
+
+  const MainScreen({super.key,this.initialIndex = 0});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -18,6 +20,10 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex; 
+  }
 
   final List<Widget> _screens = [
     const HomeScreen(),
@@ -58,12 +64,7 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    print("turn off splash:::");
-    // FlutterNativeSplash.remove();
-  }
+ 
 
   Widget _buildCustomNavBar() {
     return Container(

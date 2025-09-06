@@ -1,13 +1,14 @@
 import 'package:Sankalit/controller/book_mark_notifier.dart';
 import 'package:Sankalit/core/app_text_style.dart';
-import 'package:Sankalit/core/constants.dart';
 import 'package:Sankalit/core/theme.dart';
 import 'package:Sankalit/services/api_services.dart';
 import 'package:Sankalit/viewmodels/news_viewmodel.dart';
+import 'package:Sankalit/views/screens/main_screen.dart';
 import 'package:Sankalit/views/screens/news_detail_screen.dart';
 import 'package:Sankalit/views/widgets/common_header.dart';
 import 'package:Sankalit/views/widgets/news_card.dart';
 import 'package:Sankalit/views/widgets/no_data_found_screen.dart';
+import 'package:Sankalit/views/widgets/no_internet.dart';
 import 'package:Sankalit/views/widgets/saved_screen_widgets/saved_news_toggle_btn.dart';
 import 'package:Sankalit/views/widgets/shimmer_loading.dart';
 import 'package:Sankalit/views/widgets/video_screen_widgets/video_news_card.dart';
@@ -34,12 +35,50 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
       getSavedNews("Text News");
     });
   }
+String removeHtmlTags(String htmlText) {
+  final regex = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: true);
+  return htmlText
+      .replaceAll(regex, '')         // remove all HTML tags
+      .replaceAll('&nbsp;', ' ')
+      .replaceAll('&amp;', '&')
+      .replaceAll('&quot;', '"')
+      .replaceAll('&apos;', "'")
+      .replaceAll('&lt;', '<')
+      .replaceAll('&gt;', '>')
+      .replaceAll('&lsquo;', '‘')
+      .replaceAll('&rsquo;', '’')
+      .replaceAll('&ldquo;', '“')
+      .replaceAll('&rdquo;', '”')
+      .trim();
+}
+
+
 
   getSavedNews(newsType) async {
     try {
       final bookmarks = await ref.watch(newsBookmarkProvider);
       final response = await ApiServices.post(endpoint: 'saved-news', queryParameters: {"ids": bookmarks, "news_type": newsType});
+      if (response.containsKey("noInternet") &&
+          response["noInternet"] == true) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NoInternetWidget(
+              onRetry: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const MainScreen(initialIndex: 3,)), 
+                );
+              },
+            ),
+          ),
+        );
+        return;
+      }
       if (response['success']) {
+        print("respons--$response");
         setState(() {
           savedNewsList = response['data'];
           isLoading = false;
@@ -59,7 +98,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final newsState = ref.watch(newsProvider);
+    ref.watch(newsProvider);
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -70,7 +109,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 30.h),
+              SizedBox(height: 40.h),
               const CommonHeader(),
               SizedBox(height: 20.h),
               const Text(
@@ -126,7 +165,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
           return NewsCard(
               imageUrl: item['post_image'],
               title: item['title'],
-              description: item['description'],
+              description: removeHtmlTags(item['description'] ?? ''),
               id: item['id'],
               category: item['category'],
               onTap: () {

@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:Sankalit/core/app_text_style.dart';
 import 'package:Sankalit/core/theme.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SavedNewsToggleBtn extends StatefulWidget {
   final bool isTextNewsIsSelected;
@@ -29,7 +29,7 @@ class _SavedNewsToggleBtnState extends State<SavedNewsToggleBtn> {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(color: widget.isTextNewsIsSelected ? AppTheme.primaryColor : AppTheme.darkBackgroundColor.withOpacity(0.10), borderRadius: BorderRadius.circular(4.r)),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 5.h),
+                  padding: EdgeInsets.symmetric(vertical: 10.h),
                   child: Text("NEWS",
                       style: widget.isTextNewsIsSelected ? AppTextStyles.small.copyWith(color: AppTheme.lightBackgroundColor) : AppTextStyles.small.copyWith(color: AppTheme.darkBackgroundColor)),
                 ),
@@ -44,7 +44,7 @@ class _SavedNewsToggleBtnState extends State<SavedNewsToggleBtn> {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(color: widget.isTextNewsIsSelected ? AppTheme.darkBackgroundColor.withOpacity(0.10) : AppTheme.primaryColor, borderRadius: BorderRadius.circular(4.r)),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 5.h),
+                  padding: EdgeInsets.symmetric(vertical: 10.h),
                   child: Text("VIDEOS", style: AppTextStyles.small.copyWith(color: widget.isTextNewsIsSelected ? AppTheme.darkBackgroundColor : AppTheme.lightBackgroundColor)),
                 ),
               ),
