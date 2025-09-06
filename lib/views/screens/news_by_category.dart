@@ -1,9 +1,12 @@
-import 'package:sankalit/core/app_text_style.dart';
-import 'package:sankalit/core/theme.dart';
-import 'package:sankalit/services/api_services.dart';
-import 'package:sankalit/views/screens/news_detail_screen.dart';
-import 'package:sankalit/views/widgets/common_header.dart';
-import 'package:sankalit/views/widgets/news_card.dart';
+import 'package:Sankalit/core/app_text_style.dart';
+import 'package:Sankalit/core/theme.dart';
+import 'package:Sankalit/services/api_services.dart';
+import 'package:Sankalit/views/screens/main_screen.dart';
+import 'package:Sankalit/views/screens/news_detail_screen.dart';
+import 'package:Sankalit/views/widgets/common_header.dart';
+import 'package:Sankalit/views/widgets/news_card.dart';
+import 'package:Sankalit/views/widgets/no_data_found_screen.dart';
+import 'package:Sankalit/views/widgets/no_internet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -56,6 +59,25 @@ class _NewsCategoryScreenState extends ConsumerState<NewsCategoryScreen> {
       final response = await ApiServices.get(
         endpoint: "news-by-category?cid=${widget.newsItemId}&page=$page&per_page=$perPage",
       );
+      if (response.containsKey("noInternet") && response["noInternet"] == true) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NoInternetWidget(
+              onRetry: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const MainScreen(
+                            initialIndex: 1,
+                          )),
+                );
+              },
+            ),
+          ),
+        );
+        return;
+      }
       print("response: $response");
 
       if (response != null && response['success'] == true) {
@@ -122,50 +144,52 @@ class _NewsCategoryScreenState extends ConsumerState<NewsCategoryScreen> {
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: ListView.separated(
-                      controller: _scrollController,
-                      itemCount: newsList.length + (isLoadingMore ? 1 : 0),
-                      separatorBuilder: (context, index) => Divider(
-                        thickness: 1,
-                        color: Colors.grey.withOpacity(0.3),
-                        indent: 16.w,
-                        endIndent: 16.w,
-                      ),
-                      itemBuilder: (context, index) {
-                        if (index == newsList.length) {
-                          // ✅ Loader at the bottom
-                          return Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16.h),
-                            child: const Center(
-                              child: CircularProgressIndicator(
-                                color: AppTheme.primaryColor,
-                              ),
+                    child: newsList.isEmpty
+                        ? const NoDataFoundScreen()
+                        : ListView.separated(
+                            controller: _scrollController,
+                            itemCount: newsList.length + (isLoadingMore ? 1 : 0),
+                            separatorBuilder: (context, index) => Divider(
+                              thickness: 1,
+                              color: Colors.grey.withOpacity(0.3),
+                              indent: 16.w,
+                              endIndent: 16.w,
                             ),
-                          );
-                        }
+                            itemBuilder: (context, index) {
+                              if (index == newsList.length) {
+                                // ✅ Loader at the bottom
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                                  child: const Center(
+                                    child: CircularProgressIndicator(
+                                      color: AppTheme.primaryColor,
+                                    ),
+                                  ),
+                                );
+                              }
 
-                        final item = newsList[index];
+                              final item = newsList[index];
 
-                        return NewsCard(
-                          title: item['title'] ?? '',
-                          id: item['id'] ?? 0,
-                          description: removeHtmlTags(item['description'] ?? ''),
-                          imageUrl: item['post_image'] ?? '',
-                          category: item['category'] ?? '',
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => NewsDetailScreen(
-                                  categorizedNews: widget.categorizedNews,
-                                  newsItemId: item['id'],
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
+                              return NewsCard(
+                                title: item['title'] ?? '',
+                                id: item['id'] ?? 0,
+                                description: removeHtmlTags(item['description'] ?? ''),
+                                imageUrl: item['post_image'] ?? '',
+                                category: item['category'] ?? '',
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => NewsDetailScreen(
+                                        categorizedNews: widget.categorizedNews,
+                                        newsItemId: item['id'],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          ),
                   ),
                 ),
               ],

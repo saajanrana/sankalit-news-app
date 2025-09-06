@@ -14,15 +14,29 @@ class NoDataFoundScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.find_in_page_outlined, size: 40.sp),
-            SizedBox(height: 16.h),
-            const Text(AppStrings.noDataFound, style: AppTextStyles.heading1),
-            SizedBox(height: 5.h),
-            const Text("There is no Data to show you right now.", style: AppTextStyles.heading3),
-          ],
+  Icon(
+    Icons.article_outlined,
+    size: 40.sp,
+    color: Colors.grey, // 👈 Grey color added
+  ),
+  SizedBox(height: 16.h),
+  Text(
+    AppStrings.noDataFound,
+    style: AppTextStyles.heading1.copyWith(
+      color: Colors.grey, // 👈 Grey color added
+    ),
+  ),
+  SizedBox(height: 5.h),
+  // Text(
+  //   "There is no news to show you right now.",
+  //   style: AppTextStyles.heading3.copyWith(
+  //     color: Colors.grey, // 👈 Grey color added
+  //   ),
+  // ),
+],
+
         ),
       ),
     );
-    ;
   }
 }

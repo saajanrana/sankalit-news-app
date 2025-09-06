@@ -6,98 +6,78 @@ class ShimmerLoading extends StatelessWidget {
   const ShimmerLoading({super.key});
 
   @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Theme.of(context).colorScheme.surfaceVariant,
-      highlightColor: Theme.of(context).colorScheme.surface,
-      child: Padding(
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      child: ListView.separated(
         padding: EdgeInsets.all(16.w),
-        child: Column(
-          children: List.generate(
-            5,
-            (index) => Padding(
-              padding: EdgeInsets.only(bottom: 16.h),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
+        itemCount: 6,
+        separatorBuilder: (_, __) => SizedBox(height: 12.h),
+        itemBuilder: (context, index) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 🖼 Thumbnail placeholder
+              Container(
+                height: 80.h,
+                width: 100.w,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
+              ),
+              SizedBox(width: 12.w),
+              // 📑 Text placeholders
+              Expanded(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Image placeholder
+                    // Category / Source
                     Container(
-                      height: 200.h,
+                      height: 14.h,
+                      width: 80.w,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(6.r),
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    // Title line 1
+                    Container(
+                      height: 16.h,
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(12.r),
-                          topRight: Radius.circular(12.r),
-                        ),
+                        borderRadius: BorderRadius.circular(6.r),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(16.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Source placeholder
-                          Container(
-                            height: 20.h,
-                            width: 80.w,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10.r),
-                            ),
-                          ),
-                          SizedBox(height: 8.h),
-                          
-                          // Title placeholder
-                          Container(
-                            height: 16.h,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8.r),
-                            ),
-                          ),
-                          SizedBox(height: 8.h),
-                          Container(
-                            height: 16.h,
-                            width: 200.w,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8.r),
-                            ),
-                          ),
-                          SizedBox(height: 8.h),
-                          
-                          // Description placeholder
-                          Container(
-                            height: 12.h,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                          ),
-                          SizedBox(height: 4.h),
-                          Container(
-                            height: 12.h,
-                            width: 150.w,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                          ),
-                        ],
+                    SizedBox(height: 6.h),
+                    // Title line 2
+                    Container(
+                      height: 16.h,
+                      width: 180.w,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(6.r),
+                      ),
+                    ),
+                    SizedBox(height: 6.h),
+                    // Date or meta
+                    Container(
+                      height: 12.h,
+                      width: 100.w,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(6.r),
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ),
-        ),
+            ],
+          );
+        },
       ),
     );
   }

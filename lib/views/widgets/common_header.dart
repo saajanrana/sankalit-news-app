@@ -1,4 +1,5 @@
-import 'package:sankalit/core/theme.dart';
+import 'package:Sankalit/core/theme.dart';
+import 'package:Sankalit/views/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -14,23 +15,39 @@ class CommonHeader extends StatelessWidget {
       children: [
         if (showBackBtn)
           IconButton.filled(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(AppTheme.darkBackgroundColor),
-                foregroundColor: WidgetStateProperty.all(AppTheme.lightBackgroundColor),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Center(
-                  child: Icon(
+            style: ButtonStyle(
+              backgroundColor: WidgetStateProperty.all(AppTheme.darkBackgroundColor),
+              foregroundColor: WidgetStateProperty.all(AppTheme.lightBackgroundColor),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Center(
+              child: Icon(
                 Icons.arrow_back,
                 color: AppTheme.lightBackgroundColor,
                 size: 15.sp,
-              ))),
-        Image.asset(
-          "assets/sankalitLogo.png",
-          width: 140.w,
-        )
+              ),
+            ),
+          ),
+
+        /// 👇 Wrap logo with GestureDetector
+        GestureDetector(
+          onTap: () {
+            // Example: Navigate to HomeScreen
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const MainScreen(
+                        initialIndex: 0,
+                      )),
+            );
+          },
+          child: Image.asset(
+            "assets/sankalitLogo.png",
+            width: 140.w,
+          ),
+        ),
       ],
     );
   }
