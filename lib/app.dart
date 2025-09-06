@@ -1,4 +1,4 @@
-import 'package:Sankalit/services/api_services.dart';
+import 'package:sankalit/services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,7 +21,7 @@ class MyApp extends ConsumerWidget {
           // theme: AppTheme.lightTheme,
           // darkTheme: AppTheme.darkTheme,
           themeMode: ThemeMode.dark,
-           scaffoldMessengerKey: rootScaffoldMessengerKey,
+          scaffoldMessengerKey: rootScaffoldMessengerKey,
           home: const MainScreen(),
         );
       },

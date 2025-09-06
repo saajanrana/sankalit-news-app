@@ -1,6 +1,7 @@
 import 'package:sankalit/core/app_text_style.dart';
 import 'package:sankalit/core/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HorizontalCategoryTabs extends StatefulWidget {
   final List<String> categories;

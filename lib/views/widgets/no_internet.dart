@@ -1,5 +1,5 @@
-import 'package:Sankalit/core/theme.dart';
-import 'package:Sankalit/views/widgets/common_header.dart';
+import 'package:sankalit/core/theme.dart';
+import 'package:sankalit/views/widgets/common_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -12,7 +12,7 @@ class NoInternetWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      drawer: const CommonHeader(), 
+      drawer: const CommonHeader(),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -51,7 +51,7 @@ class NoInternetWidget extends StatelessWidget {
 
               // Retry Button
               ElevatedButton.icon(
-                 onPressed: onRetry,
+                onPressed: onRetry,
                 icon: Icon(
                   Icons.refresh,
                   size: 20.sp,
