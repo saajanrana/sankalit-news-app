@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:Sankalit/core/theme.dart';
+import 'package:sankalit/core/theme.dart';
 
 class HorizontalLineWidget extends StatelessWidget {
   const HorizontalLineWidget({super.key});

@@ -1,4 +1,4 @@
-import 'package:Sankalit/core/app_text_style.dart';
+import 'package:sankalit/core/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';

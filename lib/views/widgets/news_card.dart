@@ -1,6 +1,6 @@
-import 'package:Sankalit/controller/book_mark_notifier.dart';
-import 'package:Sankalit/core/app_text_style.dart';
-import 'package:Sankalit/core/theme.dart';
+import 'package:sankalit/controller/book_mark_notifier.dart';
+import 'package:sankalit/core/app_text_style.dart';
+import 'package:sankalit/core/theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

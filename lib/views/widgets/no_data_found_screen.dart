@@ -1,5 +1,5 @@
-import 'package:Sankalit/core/app_text_style.dart';
-import 'package:Sankalit/core/constants.dart';
+import 'package:sankalit/core/app_text_style.dart';
+import 'package:sankalit/core/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

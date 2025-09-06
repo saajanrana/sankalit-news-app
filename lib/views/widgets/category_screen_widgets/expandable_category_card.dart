@@ -1,5 +1,5 @@
-import 'package:Sankalit/views/screens/news_by_category.dart';
-import 'package:Sankalit/views/widgets/category_screen_widgets/category_card.dart';
+import 'package:sankalit/views/screens/news_by_category.dart';
+import 'package:sankalit/views/widgets/category_screen_widgets/category_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -33,15 +33,15 @@ class _ExpandableCategoryCardState extends State<ExpandableCategoryCard> {
             } else {
               // Navigate directly if only one subcategory
               final item = widget.subCategories.first;
-                Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NewsCategoryScreen(
-                              categorizedNews: item['name'],
-                              newsItemId: item['id'],
-                            ),
-                          ),
-                        );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NewsCategoryScreen(
+                    categorizedNews: item['name'],
+                    newsItemId: item['id'],
+                  ),
+                ),
+              );
               print("Tapped on ${item['name']} (id: ${item['id']})");
             }
           },
@@ -58,14 +58,14 @@ class _ExpandableCategoryCardState extends State<ExpandableCategoryCard> {
                     isSelected: _isExpanded,
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NewsCategoryScreen(
-                              categorizedNews: item['name'],
-                              newsItemId: item['id'],
-                            ),
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NewsCategoryScreen(
+                            categorizedNews: item['name'],
+                            newsItemId: item['id'],
                           ),
-                        );
+                        ),
+                      );
                     },
                   ),
                 );

@@ -1,13 +1,13 @@
-import 'package:Sankalit/core/app_text_style.dart';
-import 'package:Sankalit/core/theme.dart';
-import 'package:Sankalit/services/api_services.dart';
-import 'package:Sankalit/viewmodels/category_viewmodel.dart';
-import 'package:Sankalit/views/screens/news_by_category.dart';
-import 'package:Sankalit/views/screens/news_detail_screen.dart';
-import 'package:Sankalit/views/widgets/common_header.dart';
-import 'package:Sankalit/views/widgets/home_screen_widgets/home_add_section.dart';
-import 'package:Sankalit/views/widgets/home_screen_widgets/home_category_scroller.dart';
-import 'package:Sankalit/views/widgets/home_screen_widgets/top_home_carousel.dart';
+import 'package:sankalit/core/app_text_style.dart';
+import 'package:sankalit/core/theme.dart';
+import 'package:sankalit/services/api_services.dart';
+import 'package:sankalit/viewmodels/category_viewmodel.dart';
+import 'package:sankalit/views/screens/news_by_category.dart';
+import 'package:sankalit/views/screens/news_detail_screen.dart';
+import 'package:sankalit/views/widgets/common_header.dart';
+import 'package:sankalit/views/widgets/home_screen_widgets/home_add_section.dart';
+import 'package:sankalit/views/widgets/home_screen_widgets/home_category_scroller.dart';
+import 'package:sankalit/views/widgets/home_screen_widgets/top_home_carousel.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -290,7 +290,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Expanded(
             child: RefreshIndicator(
               onRefresh: _onRefresh,
-               color: AppTheme.primaryColor,
+              color: AppTheme.primaryColor,
               child: CustomScrollView(
                 controller: _scrollController,
                 slivers: [
@@ -382,7 +382,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           itemBuilder: (context, index) => Container(
             width: 300.w,
             margin: EdgeInsets.symmetric(horizontal: 8.w),
-            child: _buildCarouselItem(imageUrl: '', title: '', newsItemId:'', categorizedNews: ''),
+            child: _buildCarouselItem(imageUrl: '', title: '', newsItemId: '', categorizedNews: ''),
           ),
         ),
       );
@@ -394,7 +394,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           imageUrl: item['post_image'] ?? '',
           title: item['title'] ?? '',
           newsItemId: item['id'] ?? 0,
-          categorizedNews: item['category_name'] ?? '' ,
+          categorizedNews: item['category_name'] ?? '',
         );
       }).toList(),
       options: CarouselOptions(

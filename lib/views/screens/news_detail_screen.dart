@@ -1,10 +1,10 @@
-import 'package:Sankalit/controller/book_mark_notifier.dart';
-import 'package:Sankalit/core/app_text_style.dart';
-import 'package:Sankalit/core/theme.dart';
-import 'package:Sankalit/services/api_services.dart';
-import 'package:Sankalit/views/widgets/common_header.dart';
-import 'package:Sankalit/views/widgets/common_share_url_model.dart';
-import 'package:Sankalit/views/widgets/news_card.dart';
+import 'package:sankalit/controller/book_mark_notifier.dart';
+import 'package:sankalit/core/app_text_style.dart';
+import 'package:sankalit/core/theme.dart';
+import 'package:sankalit/services/api_services.dart';
+import 'package:sankalit/views/widgets/common_header.dart';
+import 'package:sankalit/views/widgets/common_share_url_model.dart';
+import 'package:sankalit/views/widgets/news_card.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

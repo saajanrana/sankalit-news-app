@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:Sankalit/core/app_text_style.dart';
-import 'package:Sankalit/core/theme.dart';
+import 'package:sankalit/core/app_text_style.dart';
+import 'package:sankalit/core/theme.dart';
 
 class SavedNewsToggleBtn extends StatefulWidget {
   final bool isTextNewsIsSelected;

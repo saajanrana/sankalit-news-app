@@ -2,10 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:Sankalit/core/theme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
@@ -15,8 +12,6 @@ final accessToken = dotenv.env['API_KEY'];
 class ApiServices {
   static dynamic post({required String endpoint, Map<String, dynamic> queryParameters = const {}}) async {
     try {
-      print("API POST Request: $apiUrl$endpoint" + "accessToken$accessToken");
-
       bool internetConnectionStatus = await InternetConnection().hasInternetAccess;
       if (!internetConnectionStatus) {
         return {"noInternet": true};
@@ -38,30 +33,30 @@ class ApiServices {
         // handleUnauthorized();
         return;
       } else {
-        Fluttertoast.cancel();
-        // Detect orientation
-        Fluttertoast.showToast(
-          msg: 'Something went wrong, please restart the application and try again.',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 5,
-          backgroundColor: AppTheme.primaryColor,
-          textColor: AppTheme.lightBackgroundColor,
-          fontSize: 12.sp,
-        );
+        // Fluttertoast.cancel();
+        // // Detect orientation
+        // Fluttertoast.showToast(
+        //   msg: 'Something went wrong, please restart the application and try again.',
+        //   toastLength: Toast.LENGTH_LONG,
+        //   gravity: ToastGravity.BOTTOM,
+        //   timeInSecForIosWeb: 5,
+        //   backgroundColor: AppTheme.primaryColor,
+        //   textColor: AppTheme.lightBackgroundColor,
+        //   fontSize: 12.sp,
+        // );
       }
     } on TimeoutException catch (_) {
-      Fluttertoast.cancel();
-      // Detect orientation
-      Fluttertoast.showToast(
-        msg: 'Something went wrong, please try again after some time.',
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 5,
-        backgroundColor: AppTheme.primaryColor,
-        textColor: AppTheme.lightBackgroundColor,
-        fontSize: 12.sp,
-      );
+      // Fluttertoast.cancel();
+      // // Detect orientation
+      // Fluttertoast.showToast(
+      //   msg: 'Something went wrong, please try again after some time.',
+      //   toastLength: Toast.LENGTH_LONG,
+      //   gravity: ToastGravity.BOTTOM,
+      //   timeInSecForIosWeb: 5,
+      //   backgroundColor: AppTheme.primaryColor,
+      //   textColor: AppTheme.lightBackgroundColor,
+      //   fontSize: 12.sp,
+      // );
     } catch (e) {
       print("error in post:::$e");
     }
@@ -93,31 +88,31 @@ class ApiServices {
         // handleUnauthorized();
         return;
       } else {
-        Fluttertoast.cancel();
-        // Detect orientation
+        // Fluttertoast.cancel();
+        // // Detect orientation
 
-        Fluttertoast.showToast(
-          msg: 'Something went wrong, please restart the application and try again.',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 5,
-          backgroundColor: AppTheme.primaryColor,
-          textColor: AppTheme.lightBackgroundColor,
-          fontSize: 12.sp,
-        );
+        // Fluttertoast.showToast(
+        //   msg: 'Something went wrong, please restart the application and try again.',
+        //   toastLength: Toast.LENGTH_LONG,
+        //   gravity: ToastGravity.BOTTOM,
+        //   timeInSecForIosWeb: 5,
+        //   backgroundColor: AppTheme.primaryColor,
+        //   textColor: AppTheme.lightBackgroundColor,
+        //   fontSize: 12.sp,
+        // );
       }
     } on TimeoutException catch (_) {
-      Fluttertoast.cancel();
-      // Detect orientation
-      Fluttertoast.showToast(
-        msg: 'Something went wrong, please try again after some time.',
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 5,
-        backgroundColor: AppTheme.primaryColor,
-        textColor: AppTheme.lightBackgroundColor,
-        fontSize: 12.sp,
-      );
+      // Fluttertoast.cancel();
+      // // Detect orientation
+      // Fluttertoast.showToast(
+      //   msg: 'Something went wrong, please try again after some time.',
+      //   toastLength: Toast.LENGTH_LONG,
+      //   gravity: ToastGravity.BOTTOM,
+      //   timeInSecForIosWeb: 5,
+      //   backgroundColor: AppTheme.primaryColor,
+      //   textColor: AppTheme.lightBackgroundColor,
+      //   fontSize: 12.sp,
+      // );
     } catch (e) {
       print("error in post:::$e");
     }

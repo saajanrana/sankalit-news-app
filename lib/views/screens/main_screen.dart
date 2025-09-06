@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:Sankalit/core/theme.dart';
-import 'package:Sankalit/views/screens/contact_us_screen.dart';
-import 'package:Sankalit/core/constants.dart';
+import 'package:sankalit/core/theme.dart';
+import 'package:sankalit/views/screens/contact_us_screen.dart';
+import 'package:sankalit/core/constants.dart';
 import 'home_screen.dart';
 import 'categories_screen.dart';
 import 'video_news_screen.dart';

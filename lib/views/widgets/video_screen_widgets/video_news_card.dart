@@ -1,8 +1,8 @@
-import 'package:Sankalit/controller/book_mark_notifier.dart';
-import 'package:Sankalit/core/app_text_style.dart';
-import 'package:Sankalit/core/theme.dart';
-import 'package:Sankalit/views/widgets/common_widgets/horizontal_line_widget.dart';
-import 'package:Sankalit/views/widgets/video_player_widget.dart';
+import 'package:sankalit/controller/book_mark_notifier.dart';
+import 'package:sankalit/core/app_text_style.dart';
+import 'package:sankalit/core/theme.dart';
+import 'package:sankalit/views/widgets/common_widgets/horizontal_line_widget.dart';
+import 'package:sankalit/views/widgets/video_player_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

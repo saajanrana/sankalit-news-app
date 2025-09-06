@@ -1,11 +1,11 @@
-import 'package:Sankalit/viewmodels/category_viewmodel.dart';
+import 'package:sankalit/viewmodels/category_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:Sankalit/core/app_text_style.dart';
-import 'package:Sankalit/core/theme.dart';
-import 'package:Sankalit/views/widgets/category_screen_widgets/expandable_category_card.dart';
-import 'package:Sankalit/views/widgets/common_header.dart';
+import 'package:sankalit/core/app_text_style.dart';
+import 'package:sankalit/core/theme.dart';
+import 'package:sankalit/views/widgets/category_screen_widgets/expandable_category_card.dart';
+import 'package:sankalit/views/widgets/common_header.dart';
 
 class CategoriesScreen extends ConsumerStatefulWidget {
   const CategoriesScreen({super.key});
@@ -18,9 +18,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-     
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   @override
